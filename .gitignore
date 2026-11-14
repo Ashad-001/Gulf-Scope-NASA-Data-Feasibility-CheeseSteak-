@@ -21,3 +21,7 @@ coverage/
 .turbo/
 __pycache__/
 *.log
+next-env.d.ts
+*.tsbuildinfo
+lib/generated/
+public/map-workers/

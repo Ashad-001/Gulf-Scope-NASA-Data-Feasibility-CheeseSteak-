@@ -1,0 +1,9 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M%2CT2M_MIN_AVG%2CPRECTOTCORR&community=AG&longitude=58.41&latitude=23.59&start=1981&end=2025&format=JSON",
+  "retrievedAt": "2026-11-14T13:20:56.7282925Z",
+  "status": 200,
+  "contentType": "application/json",
+  "bodyFile": "nasa-power-muscat-1981-2025.json",
+  "bytes": 26153,
+  "sha256": "d20d25641157f4a37e19352353b10ccba1af442e629dfcd93c73d3a73684c997"
+}
