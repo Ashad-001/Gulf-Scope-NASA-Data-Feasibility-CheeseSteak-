@@ -1,0 +1,9 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M_MIN&community=AG&longitude=50.55&latitude=26.07&start=20250201&end=20250228&format=JSON&time-standard=LST",
+  "retrievedAt": "2026-11-14T12:58:43.8560117Z",
+  "status": 200,
+  "contentType": "application/json",
+  "bodyFile": "nasa-power-bahrain-daily-min-2025-02.json",
+  "bytes": 955,
+  "sha256": "6fced0a41cc5d50dd90e60ce089c255ae8190b1f6c9076e71ba788bd82894dd8"
+}

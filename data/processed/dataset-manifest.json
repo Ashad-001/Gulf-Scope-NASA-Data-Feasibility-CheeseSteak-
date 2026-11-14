@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 2,
+  "source": {
+    "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M%2CT2M_MIN%2CPRECTOTCORR&community=AG&longitude=50.55&latitude=26.07&start=1981&end=2025&format=JSON",
+    "retrievedAt": "2026-11-14T12:43:27.267Z",
+    "status": 200,
+    "contentType": "application/json",
+    "bodyFile": "nasa-power-bahrain-2026-11-14T12-43-27.267Z.json",
+    "bytes": 25958,
+    "sha256": "c853b14a7fd81574ef6c6154480e34dcf5f355adea4cdbcaae3aaf78d2a6be6a",
+    "rawPath": "data/raw/nasa-power-bahrain-2026-11-14T12-43-27.267Z.json",
+    "metadataPath": "data/raw/nasa-power-bahrain-2026-11-14T12-43-27.267Z.metadata.json",
+    "coordinates": {
+      "latitude": 26.07,
+      "longitude": 50.55
+    },
+    "gridDegrees": {
+      "latitude": 0.5,
+      "longitude": 0.625
+    },
+    "nasaHeader": {
+      "title": "NASA/POWER Source Native Resolution Monthly and Annual",
+      "api": {
+        "version": "v2.10.0",
+        "name": "POWER Monthly and Annual API"
+      },
+      "sources": [
+        "MERRA2",
+        "POWER"
+      ],
+      "fill_value": -999,
+      "time_standard": "LST",
+      "start": "19810101",
+      "end": "20251231"
+    }
+  },
+  "minimumSource": {
+    "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M_MIN_AVG&community=AG&longitude=50.55&latitude=26.07&start=1981&end=2025&format=JSON",
+    "retrievedAt": "2026-11-14T12:58:42.3236833Z",
+    "status": 200,
+    "contentType": "application/json",
+    "bodyFile": "nasa-power-bahrain-min-avg-1981-2025.json",
+    "bytes": 9224,
+    "sha256": "ef31b430be3c87c356e28c2aa614fba148f2174b3aab239dfbff05049a8ed12d",
+    "rawPath": "data/raw/nasa-power-bahrain-min-avg-1981-2025.json",
+    "metadataPath": "data/raw/nasa-power-bahrain-min-avg-1981-2025.metadata.json",
+    "coordinates": {
+      "latitude": 26.07,
+      "longitude": 50.55
+    },
+    "gridDegrees": {
+      "latitude": 0.5,
+      "longitude": 0.625
+    },
+    "nasaHeader": {
+      "title": "NASA/POWER Source Native Resolution Monthly and Annual",
+      "api": {
+        "version": "v2.10.0",
+        "name": "POWER Monthly and Annual API"
+      },
+      "sources": [
+        "MERRA2",
+        "POWER"
+      ],
+      "fill_value": -999,
+      "time_standard": "LST",
+      "start": "19810101",
+      "end": "20251231"
+    }
+  },
+  "dailyValidationSource": {
+    "url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M_MIN&community=AG&longitude=50.55&latitude=26.07&start=20250201&end=20250228&format=JSON&time-standard=LST",
+    "retrievedAt": "2026-11-14T12:58:43.8560117Z",
+    "status": 200,
+    "contentType": "application/json",
+    "bodyFile": "nasa-power-bahrain-daily-min-2025-02.json",
+    "bytes": 955,
+    "sha256": "6fced0a41cc5d50dd90e60ce089c255ae8190b1f6c9076e71ba788bd82894dd8",
+    "rawPath": "data/raw/nasa-power-bahrain-daily-min-2025-02.json",
+    "metadataPath": "data/raw/nasa-power-bahrain-daily-min-2025-02.metadata.json",
+    "coordinates": {
+      "latitude": 26.07,
+      "longitude": 50.55
+    },
+    "gridDegrees": {
+      "latitude": 0.5,
+      "longitude": 0.625
+    },
+    "nasaHeader": {
+      "title": "NASA/POWER Source Native Resolution Daily Data",
+      "api": {
+        "version": "v2.10.3",
+        "name": "POWER Daily API"
+      },
+      "sources": [
+        "MERRA2",
+        "POWER"
+      ],
+      "fill_value": -999,
+      "time_standard": "LST",
+      "start": "20250201",
+      "end": "20250228"
+    }
+  },
+  "minimumValidation": {
+    "month": "2025-02",
+    "dailyCount": 28,
+    "dailyMeanC": 16.340357142857144,
+    "dailyMinimumC": 13.42,
+    "monthlyMeanC": 16.34
+  },
+  "monthlyRecords": 540,
+  "annualRecords": 45,
+  "firstMonth": "1981-01",
+  "lastMonth": "2025-12",
+  "validMonthlyCounts": {
+    "T2M": 540,
+    "T2M_MIN": 540,
+    "PRECTOTCORR": 540,
+    "T2M_MIN_AVG": 540
+  },
+  "sourceUnits": {
+    "T2M": "C",
+    "T2M_MIN": "C",
+    "PRECTOTCORR": "mm/day",
+    "T2M_MIN_AVG": "C"
+  },
+  "annualMinimumDefinition": "Calendar-day-weighted mean of monthly T2M_MIN_AVG. T2M_MIN extrema remain descriptive.",
+  "precipitationDefinition": "Estimated depth = source rate (mm/day) × calendar days; annual depth = sum of monthly estimates.",
+  "files": {
+    "bahrain-monthly.csv": {
+      "sha256": "ad4735b43287de8019218430db4323d9cd69dd47a735cd3b3c21a930b5676f6f"
+    },
+    "bahrain-annual.csv": {
+      "sha256": "d7fde4bcdd57c69b197532131e8764a68f849da706773968cc73a1d17e0aa10b"
+    }
+  }
+}

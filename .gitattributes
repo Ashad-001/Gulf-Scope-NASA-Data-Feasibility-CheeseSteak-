@@ -1,0 +1,2 @@
+data/raw/** -text
+data/processed/** text eol=lf

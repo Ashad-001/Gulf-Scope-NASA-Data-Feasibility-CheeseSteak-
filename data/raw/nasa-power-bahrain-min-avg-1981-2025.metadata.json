@@ -1,0 +1,9 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M_MIN_AVG&community=AG&longitude=50.55&latitude=26.07&start=1981&end=2025&format=JSON",
+  "retrievedAt": "2026-11-14T12:58:42.3236833Z",
+  "status": 200,
+  "contentType": "application/json",
+  "bodyFile": "nasa-power-bahrain-min-avg-1981-2025.json",
+  "bytes": 9224,
+  "sha256": "ef31b430be3c87c356e28c2aa614fba148f2174b3aab239dfbff05049a8ed12d"
+}
