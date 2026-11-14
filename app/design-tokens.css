@@ -1,0 +1,31 @@
+:root {
+  --gs-night: #0b0e14;
+  --gs-paper: #f4f3ef;
+  --gs-ink: #141820;
+  --gs-bone: #f2f3f5;
+  --gs-muted: #535b68;
+  --gs-line: #d5d6d8;
+  --gs-mint: #bdefcc;
+  --gs-chart-temperature: #286750;
+  --gs-chart-minimum: #65548b;
+  --gs-chart-precipitation: #176b86;
+  --gs-font: Inter, "Segoe UI", sans-serif;
+  --gs-space-1: 4px;
+  --gs-space-2: 8px;
+  --gs-space-3: 16px;
+  --gs-space-4: 24px;
+  --gs-space-5: 48px;
+  --gs-radius-control: 5px;
+  --gs-radius-section: 8px;
+  --gs-control-duration: 180ms;
+  --gs-view-duration: 280ms;
+  --gs-nav-foreground: var(--gs-bone);
+  --gs-nav-surface: var(--gs-night);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --gs-control-duration: 0ms;
+    --gs-view-duration: 0ms;
+  }
+}

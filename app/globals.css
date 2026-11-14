@@ -1,20 +1,23 @@
 @import "tailwindcss";
+@import "./design-tokens.css";
 
 :root{color-scheme:light;--ink:#132b25;--muted:#4c675e;--green:#0b765c;--line:#d7e3da;--paper:#f2f6ef;--white:#fcfefa}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Segoe UI",sans-serif;font-size:16px;line-height:1.55}
+body{margin:0;background:var(--gs-paper);color:var(--ink);font-family:var(--gs-font);font-size:16px;line-height:1.55}
 a{color:inherit}
 button,select,summary{cursor:pointer}
 :focus-visible{outline:3px solid #148c71;outline-offset:4px}
 .skip{position:absolute;left:12px;top:-80px;background:white;color:var(--ink);z-index:10;padding:10px}
 .skip:focus{top:12px}
 .shell{width:min(1200px,calc(100% - 72px));margin-inline:auto}
-.mast{background:#0a201c;color:#edf8ef;border-bottom:1px solid #28453b;position:relative;z-index:1}
-.mast-inner{display:flex;min-height:70px;align-items:center;justify-content:space-between;gap:12px}
-.wordmark{font-size:23px;letter-spacing:-.06em;font-weight:750;text-decoration:none;white-space:nowrap}
-.brand-icon{color:#a9e9b5;font-size:20px;margin-right:5px}
-.mast nav{display:flex;gap:30px;font-size:14px;color:#dbebe0}
+.mast{background:var(--gs-nav-surface);color:var(--gs-nav-foreground);border-bottom:1px solid #303642;position:relative;z-index:1}
+.mast-inner{display:flex;min-height:70px;align-items:center;justify-content:space-between;gap:var(--gs-space-2)}
+.wordmark{display:inline-flex;align-items:center;gap:var(--gs-space-2);min-height:44px;font-size:20px;font-weight:700;text-decoration:none;white-space:nowrap}
+.wordmark img{flex:none}
+.mast nav{display:flex;justify-content:flex-end;flex-wrap:wrap;column-gap:var(--gs-space-4);font-size:14px}
+.mast nav a{display:inline-flex;align-items:center;min-height:44px}
+.mast :focus-visible{outline-color:var(--gs-mint)}
 .mast nav a:hover,.footer a:hover{text-decoration:underline;text-underline-offset:4px}
 .hero{background:#0b1e1a;color:#f5fbf3;isolation:isolate;position:relative;overflow:hidden;min-height:680px;display:grid;align-items:center}
 .hero-photo{position:absolute;inset:0;z-index:-2;background:#0a1e1b url('/orbit.png') center 52%/cover no-repeat}
@@ -84,7 +87,7 @@ caption{text-align:left;color:var(--muted)}
 .state h1{font-size:2rem;font-weight:700}
 #method,#provenance{scroll-margin-top:16px}
 @media(max-width:850px){.shell{width:calc(100% - 40px)}.evidence-grid{grid-template-columns:1fr}.hero{min-height:650px}.hero-caption{right:20px}}
-@media(max-width:570px){.shell{width:calc(100% - 30px)}.mast-inner{min-height:59px}.mast nav{gap:12px;font-size:12px}.wordmark{font-size:20px}
+@media(max-width:570px){.shell{width:calc(100% - 30px)}.mast-inner{min-height:59px}.mast nav{column-gap:var(--gs-space-3);font-size:12px}
  .hero{min-height:630px}.hero-photo{background-position:61% center}.hero::after{background:linear-gradient(90deg,#071914e6,#07191465),linear-gradient(0deg,#071914c9,transparent 35%)}
  .hero-inner{padding-block:55px 88px}.hero h1{font-size:clamp(3.05rem,11vw,4.1rem)}.contours{width:100%;opacity:.54}.hero-caption{left:15px;right:15px;justify-content:space-between;font-size:9px}
  .intro,.support-grid,.controls{grid-template-columns:1fr;gap:16px}.intro{padding-block:40px}.panel{padding:16px}.chart-heading{flex-wrap:wrap}.chart{height:255px}

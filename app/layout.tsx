@@ -11,7 +11,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return <html lang="en"><body>
     <a className="skip" href="#main">Skip to content</a>
     <header className="mast"><div className="shell mast-inner">
-      <Link href="/" className="wordmark"><span aria-hidden="true" className="brand-icon">◉</span> GulfScope</Link>
+      <Link href="/" className="wordmark">
+        {/* The approved Figma export has a fixed 31 × 31 viewport. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/orbital-g-light.svg" width={31} height={31} alt="" />
+        <span>GulfScope</span>
+      </Link>
       <nav aria-label="Main navigation"><Link href="/investigate">Investigation</Link><Link href="/investigate#method">Methodology</Link></nav>
     </div></header>
     <main id="main">{children}</main>
