@@ -1,144 +1,261 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { useEffect, useRef, useState } from 'react';
 import type { Study, VariableId } from '../lib/study';
 
-const StudyMap = dynamic(() => import('./study-map').then(module => module.StudyMap), {
-  ssr: false,
-  loading: () => <div className="map map-placeholder">Loading map…</div>,
-});
-const number = new Intl.NumberFormat('en', { maximumFractionDigits: 2 });
-const probability = (value: number) => value < 0.001 ? value.toExponential(2) : value.toFixed(4);
+type AnnualStudy = Omit<Study, 'variables'> & { variables: Omit<Study['variables'][number], 'monthly'>[] };
+const Skeleton = () => <div className="field-plot field-skeleton" role="status">Loading chart…</div>;
+const Chart = dynamic(() => import('./evidence-chart'), { ssr: false, loading: Skeleton });
+const Map = dynamic(() => import('./study-map').then(module => module.StudyMap), { ssr: false });
+const colors = ['#286750', '#65548b', '#176b86'];
+const dashes = [undefined, '6 4', '2 3'];
+const probability = (value: number) => value < .001 ? value.toExponential(2) : value.toFixed(5);
+const signed = (value: number, unit: string) =>
+  (value < 0 ? '−' : value > 0 ? '+' : '') + Math.abs(value).toFixed(unit === '°C' ? 3 : 2);
 
-export function Investigation({ locations, initialLocation }: { locations: { id: string; name: string }[]; initialLocation: string }) {
+export function Investigation({ studies, initialLocation }: { studies: AnnualStudy[]; initialLocation: string }) {
   const [location, setLocation] = useState(initialLocation);
-  const [study, setStudy] = useState<Study | null>(null);
-  const [error, setError] = useState(false);
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch(`/api/studies/${encodeURIComponent(location)}`, { signal: controller.signal })
-      .then(response => {
-        if (!response.ok) throw new Error('Study unavailable');
-        return response.json();
-      })
-      .then(setStudy)
-      .catch(() => { if (!controller.signal.aborted) setError(true); });
-    return () => controller.abort();
-  }, [attempt, location]);
-  const selectLocation = (id: string) => {
-    if (id === location || !locations.some(item => item.id === id)) return;
-    setError(false);
-    setStudy(null);
-    setLocation(id);
-  };
-  if (error) return <div className="shell state"><h1>Study data unavailable</h1>
-    <p role="alert">The verified dataset could not be loaded.</p>
-    <button className="action" onClick={() => { setError(false); setAttempt(value => value + 1); }}>Try again</button>
-    {location !== 'bahrain' && <button className="action" onClick={() => selectLocation('bahrain')}>Return to Bahrain</button>}</div>;
-  if (!study) return <div className="shell state" role="status">Loading verified study data…</div>;
-  return <Workspace key={study.id} study={study} locations={locations} selectLocation={selectLocation} />;
-}
-
-function Workspace({ study, locations, selectLocation }: {
-  study: Study; locations: { id: string; name: string }[]; selectLocation: (id: string) => void;
-}) {
   const [id, setId] = useState<VariableId>('T2M');
-  const start = study.variables[0].annual[0].year;
-  const end = study.variables[0].annual.at(-1)!.year;
-  const [first, setFirst] = useState(start);
-  const [last, setLast] = useState(end);
+  const [year, setYear] = useState(2025);
+  const [hover, setHover] = useState<number>();
+  const [playing, setPlaying] = useState(false);
   const [showTrend, setShowTrend] = useState(true);
-  const variable = study.variables.find(item => item.id === id) ?? study.variables[0];
+  const [mapReady, setMapReady] = useState(false);
+  const [guide, setGuide] = useState<number | null>(null);
+  const [monthly, setMonthly] = useState<{ key: string; rows: Study['variables'][number]['monthly'] }>();
+  const [monthState, setMonthState] = useState<'idle' | 'loading' | 'error'>('idle');
+  const request = useRef<AbortController | null>(null);
+  const timeline = useRef<HTMLDivElement>(null);
+  const geography = useRef<HTMLElement>(null);
+  const study = studies.find(item => item.id === location)!;
+  const variable = study.variables.find(item => item.id === id)!;
   const { trend, unit } = variable;
-  const rows = variable.annual.filter(row => row.year >= first && row.year <= last);
-  const chart = rows.map(row => ({ ...row, fitted: trend.intercept + trend.slopePerYear * (row.year - start) }));
-  const slope = `${trend.slopePerDecade > 0 ? '+' : ''}${trend.slopePerDecade.toFixed(unit === '°C' ? 3 : 2)}`;
-  const years = variable.annual.map(row => row.year);
-  return <>
-    <section className="investigate-heading"><div className="shell">
-      <p className="eyebrow accent"><span className="signal" /> Earth system investigation</p>
-      <h1>{study.name}</h1>
-      <p>{study.region} <span className="separator">/</span> {start}–{end} <span className="separator">/</span> {study.source} · {study.product}</p>
-    </div></section>
-    <div className="shell workspace">
-      <div className="controls">
-        <label>Study location<select value={study.id} onChange={event => selectLocation(event.target.value)}>{locations.map(item =>
-          <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-        <label>Environmental variable<select value={variable.id} onChange={event => {
-          const next = study.variables.find(item => item.id === event.target.value);
-          if (next) setId(next.id);
-        }}>{study.variables.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+  const start = variable.annual[0].year;
+  const end = variable.annual.at(-1)!.year;
+  const reading = variable.annual.find(row => row.year === year)!;
+  const hovered = variable.annual.find(row => row.year === hover);
+  const slope = signed(trend.slopePerDecade, unit);
+  const warming = unit === '°C' && trend.significant && trend.slopePerDecade > 0;
+  const title = warming ? `${study.name}’s warming record` : `${study.name}’s ${unit === 'mm' ? 'precipitation' : 'temperature'} record`;
+  const status = trend.significant ? `Statistically significant ${trend.slopePerDecade > 0 ? 'increase' : 'decrease'}` : 'Not statistically significant';
+  const comparison = studies.map((site, i) => ({
+    site, variable: site.variables.find(item => item.id === id)!, color: colors[i], dash: dashes[i],
+  }));
+  const regionalRows = variable.annual.map(({ year }, i) => ({
+    year, ...Object.fromEntries(comparison.map(item => [item.site.id, item.variable.annual[i].value])),
+  }));
+  const monthlyKey = `${location}:${id}`;
+
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setTimeout(() => {
+      const next = year + 1;
+      setYear(next);
+      if (next >= end) setPlaying(false);
+    }, 550);
+    return () => window.clearTimeout(timer);
+  }, [playing, year, end]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.target === timeline.current && !entry.isIntersecting) setPlaying(false);
+        if (entry.target === geography.current && entry.isIntersecting) {
+          setMapReady(true);
+          observer.unobserve(entry.target);
+        }
+      }
+    }, { rootMargin: '0px 0px 72px' });
+    if (timeline.current) observer.observe(timeline.current);
+    if (geography.current) observer.observe(geography.current);
+    const pauseHidden = () => { if (document.hidden) setPlaying(false); };
+    document.addEventListener('visibilitychange', pauseHidden);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', pauseHidden);
+      request.current?.abort();
+    };
+  }, []);
+
+  function changeSelection() {
+    setPlaying(false);
+    setHover(undefined);
+    request.current?.abort();
+    setMonthState('idle');
+  }
+
+  function selectLocation(next: string) {
+    changeSelection();
+    setLocation(next);
+    const url = new URL(window.location.href);
+    url.searchParams.set('location', next);
+    window.history.replaceState(null, '', url);
+  }
+
+  function selectYear(next: number) {
+    if (next < start || next > end || !Number.isInteger(next)) return;
+    setPlaying(false);
+    setYear(next);
+  }
+
+  async function loadMonthly() {
+    request.current?.abort();
+    const controller = new AbortController();
+    request.current = controller;
+    setMonthState('loading');
+    try {
+      const response = await fetch(`/api/studies/${encodeURIComponent(location)}`, { signal: controller.signal });
+      if (!response.ok) throw new Error('Monthly study unavailable');
+      const data: Study = await response.json();
+      const rows = data.variables.find(item => item.id === id)?.monthly;
+      if (data.id !== location || !rows || rows.length !== study.completeness.months) throw new Error('Invalid monthly data');
+      if (controller.signal.aborted) return;
+      setMonthly({ key: monthlyKey, rows });
+      setMonthState('idle');
+    } catch {
+      if (!controller.signal.aborted) setMonthState('error');
+    }
+  }
+
+  const stops = [
+    ['Annual observations', 'Use the year slider or chart to inspect a recorded annual value.', '#annual'],
+    ['Trend and uncertainty', 'Review the slope estimate, interval and significance for the selected series.', '#trend'],
+    ['Sources and limitations', 'Open the source record to trace the retrievals and understand the model grid.', '#provenance'],
+  ];
+
+  return <div className="field-study" onPointerDown={event => {
+      if (!(event.target instanceof Element) || !event.target.closest('[data-playback]')) setPlaying(false);
+    }} onKeyDown={event => {
+      if (event.key === 'Escape') { setGuide(null); setPlaying(false); }
+    }}>
+    <header className="field-header">
+      <div className="field-shell">
+        <p className="field-kicker">Study {String(studies.indexOf(study) + 1).padStart(2, '0')} / {study.region} / {start}–{end}</p>
+        <h1>{title}</h1>
+        <p className="field-lead">{warming
+          ? `${variable.name} increased by ${Math.abs(trend.slopePerDecade).toFixed(3)} °C per decade.`
+          : `${variable.name} · ${slope} ${unit} per decade. ${status}.`}</p>
+        <p className="field-meta">{study.source} · {study.product} / {study.latitude.toFixed(2)}° N, {study.longitude.toFixed(2)}° E</p>
       </div>
-      <div className="evidence-grid">
-        <section className="panel chart-panel" aria-labelledby="series-title">
-          <div className="chart-heading">
-            <div><p className="eyebrow">Annual observations · {unit}</p><h2 id="series-title">{variable.name}</h2></div>
-            <label className="check"><input type="checkbox" checked={showTrend} onChange={event => setShowTrend(event.target.checked)} /> Sen trend line</label>
+    </header>
+    <div className="field-shell field-content">
+      <div className="field-selectors">
+        <fieldset><legend>Study location</legend><div className="field-options locations">
+          {studies.map(site => <button key={site.id} type="button" aria-pressed={site.id === location}
+            onClick={() => selectLocation(site.id)}>{site.name}</button>)}
+        </div></fieldset>
+        <fieldset><legend>Environmental variable</legend><div className="field-options variables">
+          {study.variables.map(item => <button key={item.id} type="button" aria-label={item.name} aria-pressed={item.id === id}
+            onClick={() => { changeSelection(); setId(item.id); }}>{item.short}</button>)}
+        </div></fieldset>
+      </div>
+
+      <button type="button" className="field-link" aria-expanded={guide !== null} onClick={() => setGuide(guide === null ? 0 : null)}>Guided evidence walkthrough</button>
+      {guide !== null && <aside className="field-guide" aria-label="Evidence walkthrough">
+        <p aria-live="polite"><strong>{guide + 1} / {stops.length} · {stops[guide][0]}</strong> {stops[guide][1]}</p>
+        <a href={stops[guide][2]}>Go to section</a>
+        <button type="button" onClick={() => setGuide(guide + 1 < stops.length ? guide + 1 : null)}>{guide + 1 < stops.length ? 'Next' : 'Finish'}</button>
+        <button type="button" onClick={() => setGuide(null)}>Skip walkthrough</button>
+      </aside>}
+
+      <div className="field-evidence">
+        <section id="annual" className="field-panel" aria-labelledby="annual-title">
+          <p className="field-kicker">Annual observations / {unit}</p>
+          <h2 id="annual-title">{variable.name}</h2>
+          <label className="check"><input type="checkbox" checked={showTrend} onChange={event => setShowTrend(event.target.checked)} /> Sen trend line</label>
+          <div onMouseLeave={() => setHover(undefined)}>
+            <Chart rows={variable.annual.map(row => ({
+              year: row.year, value: row.value, fitted: trend.intercept + trend.slopePerYear * (row.year - start),
+            }))} series={[
+              { key: 'value', name: 'Annual value', color: colors[0] },
+              ...(showTrend ? [{ key: 'fitted', name: 'Sen trend', color: colors[1], dash: '6 4' }] : []),
+            ]} unit={unit} year={year} selectYear={selectYear} inspectYear={next => { setPlaying(false); setHover(next); }} />
           </div>
-          <div className="chart" aria-label={`${variable.name} in ${unit}, ${first} to ${last}`}>
-            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 640, height: 310 }}>
-              <LineChart data={chart} margin={{ top: 12, right: 15, bottom: 4, left: 0 }} accessibilityLayer>
-                <CartesianGrid stroke="#dce6df" vertical={false} />
-                <XAxis dataKey="year" tick={{ fill: '#425b54', fontSize: 12 }} minTickGap={24} axisLine={false} tickLine={false} />
-                <YAxis width={42} domain={['auto', 'auto']} tick={{ fill: '#425b54', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip isAnimationActive={false} formatter={(value, name) => [`${number.format(Number(value))} ${unit}`, String(name)]} />
-                <Line type="linear" name="Annual value" dataKey="value" stroke="#0b785e" strokeWidth={2.2} dot={false} activeDot={{ r: 5 }} isAnimationActive={false} />
-                {showTrend && <Line type="linear" name="Sen trend" dataKey="fitted" stroke="#9e542a" strokeWidth={2} strokeDasharray="5 5" dot={false} isAnimationActive={false} />}
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="field-timeline" ref={timeline}>
+            <input aria-label="Observation year" type="range" min={start} max={end} step={1} value={year}
+              aria-valuetext={`${year}, ${reading.value.toFixed(2)} ${unit}`}
+              onChange={event => selectYear(Number(event.target.value))} />
+            <div className="field-years"><span>{start}</span><span>{end}</span></div>
+            <div className="field-reading">
+              <button data-playback type="button" onClick={() => {
+                if (!playing && year === end) setYear(start);
+                setHover(undefined);
+                setPlaying(!playing);
+              }}>{playing ? 'Pause' : '▶ Play'}</button>
+              <output aria-live={playing ? 'off' : 'polite'}>{year} · {reading.value.toFixed(2)} {unit}</output>
+              {hovered && hovered.year !== year && <span>Hover {hovered.year} · {hovered.value.toFixed(2)} {unit}</span>}
+            </div>
           </div>
-          <div className="range">
-            <label>From<select value={first} onChange={event => setFirst(Number(event.target.value))}>{years.filter(year => year < last).map(year => <option key={year}>{year}</option>)}</select></label>
-            <label>To<select value={last} onChange={event => setLast(Number(event.target.value))}>{years.filter(year => year > first).map(year => <option key={year}>{year}</option>)}</select></label>
-            <button onClick={() => { setFirst(start); setLast(end); }}>Reset period</button>
-          </div>
-          <p className="note">Showing {rows.length} annual values. The fit and statistical tests always use {start}–{end}.</p>
-          <details className="data-table"><summary>View annual values</summary>
-            <div className="table-scroll"><table><caption>{variable.name} ({unit})</caption><thead><tr><th scope="col">Year</th><th scope="col">Annual value</th></tr></thead>
-              <tbody>{rows.map(row => <tr key={row.year}><th scope="row">{row.year}</th><td>{number.format(row.value)}</td></tr>)}</tbody></table></div>
+          <details><summary>View annual values</summary>
+            <div className="table-scroll"><table><caption>{study.name} · {variable.name} ({unit})</caption>
+              <thead><tr><th scope="col">Year</th><th scope="col">Annual value</th></tr></thead>
+              <tbody>{variable.annual.map(row => <tr key={row.year}><th scope="row">{row.year}</th><td>{row.value.toFixed(2)}</td></tr>)}</tbody>
+            </table></div>
+          </details>
+          <details><summary>Monthly detail</summary>
+            {monthly?.key === monthlyKey ? <>
+              {variable.originalUnit !== unit && <p>Monthly values are reported in the source unit, {variable.originalUnit}.</p>}
+              <div className="table-scroll"><table><caption>{study.name} · {variable.name} ({variable.originalUnit})</caption>
+                <thead><tr><th scope="col">Month</th><th scope="col">Source value</th></tr></thead>
+                <tbody>{monthly.rows.map(row => <tr key={`${row.year}-${row.month}`}><th scope="row">{row.year}-{String(row.month).padStart(2, '0')}</th><td>{row.value}</td></tr>)}</tbody>
+              </table></div>
+            </> : <>
+              {monthState === 'error' && <p role="alert">Monthly values could not be loaded.</p>}
+              <button type="button" disabled={monthState === 'loading'} onClick={loadMonthly}>
+                {monthState === 'loading' ? 'Loading monthly values…' : monthState === 'error' ? 'Retry monthly values' : 'Load monthly values'}
+              </button>
+            </>}
           </details>
         </section>
-        <aside className="panel result" aria-labelledby="trend-title">
-          <p className="eyebrow" id="trend-title">Sen’s slope</p>
-          <p className="slope">{slope}<small> {unit} / decade</small></p>
-          <p className="result-status">{trend.significant
-            ? `Significant ${trend.slopePerDecade > 0 ? 'upward' : 'downward'} trend`
-            : 'No statistically significant trend detected'}</p>
+
+        <section id="trend" className="field-panel field-trend" aria-labelledby="trend-title">
+          <p className="field-kicker">Sen slope / full record</p>
+          <h2 id="trend-title">{slope} {unit}</h2>
+          <p><strong>Per decade · {status}</strong></p>
           <dl>
-            <div><dt>Approx. 95% slope interval</dt><dd>{trend.interval.perDecade.map(value => value.toFixed(unit === '°C' ? 3 : 2)).join(' to ')} {unit}/decade</dd></div>
             <div><dt>Hamed–Rao p</dt><dd>{probability(trend.hamedRao.p)}</dd></div>
             <div><dt>Holm-adjusted p</dt><dd>{probability(trend.adjustedP)}</dd></div>
-            <div><dt>Ordinary MK p</dt><dd>{probability(trend.ordinary.p)}</dd></div>
+            <div><dt>Approx. 95% slope interval</dt><dd>{trend.interval.perDecade.map(value => signed(value, unit)).join(' to ')} {unit}/decade</dd></div>
           </dl>
           <SlopeInterval interval={trend.interval.perDecade} estimate={trend.slopePerDecade} />
-          <p>{variable.description}</p>
-          {id === 'PRECTOTCORR' && <p className="note sensitivity">{study.methodology.precipitation}</p>}
-        </aside>
-      </div>
-      <div className="support-grid">
-        <section className="panel map-panel"><p className="eyebrow">Study geography</p><h2>Where the series applies</h2>
-          <StudyMap study={study} />
-          <p className="note">The marker shows the requested point. The native grid spacing is {study.grid.latitude}° latitude × {study.grid.longitude}° longitude.</p>
-        </section>
-        <section className="panel method" id="method"><p className="eyebrow">Reading the evidence</p><h2>Methodology</h2>
-          <p>{study.methodology.analysis}</p><p>{study.methodology.interval} The interval expresses uncertainty about the slope.</p>
-          <p>{study.methodology.limits}</p>
+          <p className="field-meta">Moving-block bootstrap · {trend.interval.blockLength}-year blocks. The interval describes uncertainty in the slope.</p>
+          {id === 'PRECTOTCORR' && <p>{study.methodology.precipitation}</p>}
+          <details><summary>What makes a trend significant?</summary><p>The Holm-adjusted p-value is compared with {study.methodology.alpha}. The correction covers the three outcomes tested at this site.</p></details>
         </section>
       </div>
-      <section className="panel provenance" id="provenance"><p className="eyebrow">Source record</p><h2>NASA data provenance</h2>
-        <p>{study.completeness.months} complete months · {study.completeness.years} complete years · {study.completeness.missing} missing months</p>
-        <p>{variable.id} · NASA original unit {variable.originalUnit} · Annual chart unit {unit}</p>
-        <details><summary>Inspect retrievals and SHA‑256 checksums</summary><ul>
-          {study.provenance.map(file => <li key={file.sha256}><a href={file.url}>{file.bodyFile} ↗</a><span>{file.retrievedAt}</span><code>{file.sha256}</code></li>)}
-        </ul></details>
+
+      <section className="field-panel field-compare" aria-labelledby="compare-title">
+        <p className="field-kicker">Regional comparison / {variable.short}</p>
+        <h2 id="compare-title">Compare the three records</h2>
+        <Chart rows={regionalRows} series={comparison.map(item => ({
+          key: item.site.id, name: item.site.name, color: item.color, dash: item.dash,
+        }))} unit={unit} />
+        <ul>{comparison.map(item => <li key={item.site.id}>
+          <strong style={{ color: item.color }}>{item.site.name}</strong> {signed(item.variable.trend.slopePerDecade, unit)} {unit}/decade
+        </li>)}</ul>
+        <p className="field-meta">{start}–{end} · Shared {unit} scale. The comparison describes the three records. Each site has its own trend tests.</p>
+      </section>
+
+      <section ref={geography} className="field-panel field-geography" aria-labelledby="geography-title">
+        <p className="field-kicker">Sampling geography / MapLibre</p>
+        <h2 id="geography-title">{study.name} sampling point</h2>
+        {mapReady ? <Map key={location} study={study} /> : <div className="map map-placeholder">Map loads near this section.</div>}
+        <p className="field-meta">{study.latitude.toFixed(2)}° N / {study.longitude.toFixed(2)}° E · {study.grid.latitude}° latitude × {study.grid.longitude}° longitude native grid spacing.</p>
+      </section>
+
+      <section className="field-panel field-sources" id="provenance" aria-labelledby="source-title">
+        <p className="field-kicker">Evidence and limitations</p><h2 id="source-title">Follow the source</h2>
+        <details><summary>NASA retrievals and SHA‑256</summary>
+          <p>{study.source} · {study.product}. {study.completeness.months} complete months, {study.completeness.missing} missing.</p>
+          <ul>{study.provenance.map(file => <li key={file.sha256}><a href={file.url}>{file.bodyFile} ↗</a><br /><time>{file.retrievedAt}</time><br /><code>{file.sha256}</code></li>)}</ul>
+        </details>
+        <details id="method"><summary>Methods and bootstrap uncertainty</summary><p>{variable.description}</p><p>{study.methodology.analysis}</p><p>{study.methodology.interval}</p></details>
+        <details><summary>Model grid and limits of inference</summary><p>{study.methodology.limits}</p></details>
       </section>
     </div>
-  </>;
+  </div>;
 }
-
 function SlopeInterval({ interval: [low, high], estimate }: { interval: [number, number]; estimate: number }) {
   const min = Math.min(0, low, estimate);
   const max = Math.max(0, high, estimate);

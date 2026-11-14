@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./design-tokens.css";
+.field-mobile-menu { display: none; }
 
 :root{color-scheme:light;--ink:#132b25;--muted:#4c675e;--green:#0b765c;--line:#d7e3da;--paper:#f2f6ef;--white:#fcfefa}
 *{box-sizing:border-box}

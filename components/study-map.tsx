@@ -5,7 +5,7 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Study } from '../lib/study';
 
-export function StudyMap({ study }: { study: Study }) {
+export function StudyMap({ study }: { study: Pick<Study, 'latitude' | 'longitude' | 'name'> }) {
   const host = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
   const { latitude, longitude, name } = study;

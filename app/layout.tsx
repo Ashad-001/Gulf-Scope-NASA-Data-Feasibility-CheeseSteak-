@@ -18,6 +18,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <span>GulfScope</span>
       </Link>
       <nav aria-label="Main navigation"><Link href="/investigate">Investigation</Link><Link href="/investigate#method">Methodology</Link></nav>
+      <details className="field-mobile-menu">
+        <summary>Menu <span aria-hidden="true">≡</span></summary>
+        <nav aria-label="Mobile investigation navigation"><Link href="/">The study</Link><Link href="/investigate#method">Methodology</Link></nav>
+      </details>
     </div></header>
     <main id="main">{children}</main>
     <footer className="shell footer"><span>GulfScope / NASA Space Apps Challenge 2026</span><a href="https://power.larc.nasa.gov/">NASA POWER ↗</a></footer>
