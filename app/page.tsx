@@ -36,7 +36,7 @@ export default function Home() {
       <div className="living-shell">
         <p className="living-kicker">The record / {first}–{last}</p>
         <h2 id="record-title">{study.completeness.years} years of change</h2>
-        <p className="living-note">Explore the years that make up the Bahrain temperature record.</p>
+        <p className="living-note">Follow Bahrain’s annual mean air temperature from the first year to the latest.</p>
         <AnnualTrace readings={temperature.annual} name="Bahrain mean air temperature" unit={temperature.unit} />
       </div>
     </section>
@@ -64,16 +64,6 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="living-section living-method" id="method" aria-labelledby="method-title">
-      <div className="living-shell">
-        <p className="living-kicker">How the investigation works</p>
-        <h2 id="method-title">From observation to evidence</h2>
-        <ol className="evidence-steps">{steps.map(([title, description], index) => <li key={title}>
-          <span className="step-number" aria-hidden="true">{index + 1}</span><h3>{title}</h3><p>{description}</p>
-        </li>)}</ol>
-      </div>
-    </section>
-
     <section className="living-section" aria-labelledby="gulf-title">
       <div className="living-shell">
         <p className="living-kicker">The study locations</p>
@@ -93,7 +83,18 @@ export default function Home() {
           <Link href={`/investigate?location=${site.id}`}>{site.name} <span aria-hidden="true">↗</span></Link>
           <span>{site.latitude.toFixed(2)}° N · {site.longitude.toFixed(2)}° E</span>
         </li>)}</ul>
-        <p className="living-note">Schematic geography. Study points are plotted from verified coordinates.</p>
+        <p className="living-note">The three sampling points put Bahrain’s record in regional context. The map is schematic.</p>
+      </div>
+    </section>
+
+    <section className="living-section living-method" id="method" aria-labelledby="method-title">
+      <div className="living-shell">
+        <p className="living-kicker">How the investigation works</p>
+        <h2 id="method-title">From observation to evidence</h2>
+        <p className="living-note">The same four steps guide each regional investigation.</p>
+        <ol className="evidence-steps">{steps.map(([title, description], index) => <li key={title}>
+          <span className="step-number" aria-hidden="true">{index + 1}</span><h3>{title}</h3><p>{description}</p>
+        </li>)}</ol>
       </div>
     </section>
 

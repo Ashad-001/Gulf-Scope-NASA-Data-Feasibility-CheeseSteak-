@@ -104,3 +104,53 @@
   .earth-scene[data-earth-ready="true"] .earth-canvas,.earth-motion-control { display: none; }
   .earth-scene[data-earth-ready="true"] > img { opacity: 1; transition: none; }
 }
+/* Shared editorial measures and a hero with separate rows for image and controls. */
+.living-home {
+  --home-heading: clamp(2rem, 1.42rem + 2.12vw, 3.65rem);
+  --home-subhead: clamp(1.05rem, .94rem + .44vw, 1.35rem);
+  --home-section-space: clamp(44px, 4.15vw, 64px);
+}
+.living-hero { padding-top: clamp(30px, 3vw, 45px); padding-bottom: 22px; }
+.earth-copy { max-width: 100%; }
+.earth-copy h1 { font-size: clamp(2rem, 1.15rem + 3.5vw, 4.15rem); line-height: 1.13; text-wrap: balance; }
+.earth-region { display: grid; justify-items: center; width: 100%; }
+.earth-scene { width: min(760px, 100%); margin-top: -8px; }
+.earth-scene > img { transform: scale(.899); }
+.earth-motion-slot { display: grid; place-items: center; min-height: 44px; }
+.earth-motion-control {
+  position: static; display: inline-flex; align-items: center;
+  border-color: var(--wd-control); padding-inline: 14px;
+}
+.earth-actions { margin-top: 12px; }
+.earth-cue { color: var(--wd-secondary); }
+.living-section > .living-shell { padding-block: var(--home-section-space); }
+.living-section h2 { max-width: 21ch; font-size: var(--home-heading); text-wrap: balance; }
+.living-section .living-note { max-width: 57ch; }
+.signal-grid h3,.evidence-steps h3 { font-size: var(--home-subhead); line-height: 1.25; }
+.signal-grid h3 { max-width: 26ch; }
+.signal-slope { font-size: clamp(1.45rem, 1.18rem + 1vw, 2.15rem); margin-block: 5px; }
+.evidence-steps { margin: clamp(30px, 3.5vw, 52px) 0 8px; }
+.closing-layout { align-items: center; }
+@media (min-width: 850px) {
+  .earth-motion-slot { justify-self: end; margin-right: max(24px, calc((100% - 1256px) / 2)); }
+  .signal-grid h3 { min-height: 2.5em; }
+}
+@media (max-width: 570px) {
+  .earth-scene { margin-top: 4px; }
+  .earth-copy h1 { max-width: 15ch; }
+  .living-section h2 { text-wrap: wrap; }
+  .closing-layout { gap: 20px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .living-method .step-number {
+      animation: method-marker linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 23%;
+    }
+    @keyframes method-marker {
+      from { background-color: var(--wd-divider); }
+      to { background-color: var(--wd-surface); }
+    }
+  }
+}

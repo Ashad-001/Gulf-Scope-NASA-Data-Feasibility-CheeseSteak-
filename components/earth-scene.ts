@@ -24,7 +24,7 @@ export async function createEarth(canvas: HTMLCanvasElement, signal: AbortSignal
   }
 
   const scene = new Scene();
-  const camera = new OrthographicCamera(-1.08, 1.08, 1.08, -1.08, 0.1, 20);
+  const camera = new OrthographicCamera(-1.2, 1.2, 1.2, -1.2, 0.1, 20);
   camera.position.set(0, 5 * Math.sin(MathUtils.degToRad(22)), 5 * Math.cos(MathUtils.degToRad(22)));
   camera.lookAt(0, 0, 0);
 
@@ -38,20 +38,38 @@ export async function createEarth(canvas: HTMLCanvasElement, signal: AbortSignal
   key.position.set(-2, 3, 4);
   scene.add(key);
 
-  // One point cloud, with fixed placement so the composition is repeatable.
-  const dustPositions = Array.from({ length: 30 }, (_, i) => {
-    const angle = i * 2.39996;
-    const radius = 1.015 + (i % 5) * 0.012;
-    return [Math.cos(angle) * radius, Math.sin(angle) * radius, 0];
-  }).flat();
-  const dustGeometry = new BufferGeometry();
-  dustGeometry.setAttribute('position', new Float32BufferAttribute(dustPositions, 3));
-  const dustMaterial = new PointsMaterial({ color: 0x8c9092, size: 1.4, sizeAttenuation: false, transparent: true, opacity: 0.22, depthWrite: false });
   const dustPlane = new Group();
   dustPlane.quaternion.copy(camera.quaternion);
-  const dust = new Points(dustGeometry, dustMaterial);
-  dustPlane.add(dust);
   scene.add(dustPlane);
+
+  // Spread two small clouds along the limb, with denser pockets near the lower edges.
+  const layers = [
+    { count: 34, size: 1.9, opacity: 0.30, depth: -0.1, drift: 0.012 },
+    { count: 18, size: 2.9, opacity: 0.44, depth: 0.14, drift: 0.021 },
+  ].map(({ count, size, opacity, depth, drift }, layer) => {
+    const positions = Array.from({ length: count }, (_, i) => {
+      const spread = (i * 0.618034) % 1;
+      const angle = (i % 2 === 0 ? -0.52 : 3.66) + (spread - 0.5) * 1.66;
+      const radius = 1.02 + ((i * 0.414214 + layer * 0.28) % 1) * 0.15;
+      return [Math.cos(angle) * radius, Math.sin(angle) * radius, depth];
+    }).flat();
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    const material = new PointsMaterial({
+      color: 0x65696a, size, opacity, transparent: true,
+      sizeAttenuation: false, depthWrite: false,
+    });
+    // Feather each point in the shader without an additional texture request.
+    material.onBeforeCompile = shader => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <alphatest_fragment>',
+        'diffuseColor.a *= 1.0 - smoothstep(0.13, 0.5, length(gl_PointCoord - vec2(0.5)));',
+      );
+    };
+    const points = new Points(geometry, material);
+    dustPlane.add(points);
+    return { points, geometry, material, drift };
+  });
 
   return {
     resize(size: number, pixelRatio: number) {
@@ -60,14 +78,20 @@ export async function createEarth(canvas: HTMLCanvasElement, signal: AbortSignal
     },
     render(seconds: number) {
       globe.rotation.y = MathUtils.degToRad(-46 - 90) + seconds * (2 * Math.PI / 150);
-      dust.rotation.z = seconds * 0.024;
+      for (const { points, drift } of layers) {
+        points.rotation.z = Math.sin(seconds * drift) * 0.14;
+        points.position.x = Math.sin(seconds * drift * 1.3) * 0.043;
+        points.position.y = Math.sin(seconds * drift * 0.8) * 0.033;
+      }
       renderer.render(scene, camera);
     },
     dispose() {
       globeGeometry.dispose();
       globeMaterial.dispose();
-      dustGeometry.dispose();
-      dustMaterial.dispose();
+      for (const { geometry, material } of layers) {
+        geometry.dispose();
+        material.dispose();
+      }
       texture.dispose();
       renderer.dispose();
     },

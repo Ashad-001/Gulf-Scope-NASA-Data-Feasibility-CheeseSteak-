@@ -44,7 +44,7 @@ export function LivingEarth({ children }: { children: ReactNode }) {
     const render = (time: number) => {
       frame = 0;
       if (!scene) return;
-      if (previous !== undefined) seconds = (seconds + Math.min(time - previous, 100) / 1000) % 150;
+      if (previous !== undefined) seconds = (seconds + Math.min(time - previous, 100) / 1000);
       previous = time;
       try {
         scene.render(seconds);
@@ -153,11 +153,13 @@ export function LivingEarth({ children }: { children: ReactNode }) {
     sync.current();
   }
 
-  return <div className="earth-scene" ref={stage} data-earth-ready={ready}>
-    {children}
-    <canvas ref={canvas} className="earth-canvas" aria-hidden="true" />
-    {ready && <button type="button" className="earth-motion-control" onClick={togglePause}>
+  return <div className="earth-region">
+    <div className="earth-scene" ref={stage} data-earth-ready={ready}>
+      {children}
+      <canvas ref={canvas} className="earth-canvas" aria-hidden="true" />
+    </div>
+    <div className="earth-motion-slot">{ready && <button type="button" className="earth-motion-control" onClick={togglePause}>
       {isPaused ? 'Resume motion' : 'Pause motion'}
-    </button>}
+    </button>}</div>
   </div>;
 }
