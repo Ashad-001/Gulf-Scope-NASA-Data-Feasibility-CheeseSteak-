@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AnnualTrace } from '../components/annual-trace';
+import { LivingEarth } from '../components/living-earth';
 import { getLocations, getStudy } from '../lib/study';
 import './home.css';
 
@@ -22,9 +23,9 @@ export default function Home() {
         <p className="living-kicker">NASA POWER / MERRA-2</p>
         <h1 id="earth-title">The Earth leaves signals.<br />We uncover the evidence.</h1>
       </div>
-      <div className="earth-scene" aria-hidden="true">
+      <LivingEarth>
         <img src="/white-dust-earth.webp" width={960} height={960} alt="" fetchPriority="high" />
-      </div>
+      </LivingEarth>
       <div className="earth-actions">
         <Link href="/investigate" className="living-cta">Start investigation <span aria-hidden="true">↗</span></Link>
         <a className="earth-cue" href="#study"><span aria-hidden="true">↓</span> Follow the record</a>
