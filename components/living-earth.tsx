@@ -1,14 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type PointerEvent } from 'react';
+
 
 export function LivingEarth({ children }: { children: ReactNode }) {
   const stage = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const paused = useRef(false);
+  const orientation = useRef({ yaw: 0, pitch: 0 });
+  const gesture = useRef<{ id: number; x: number; y: number; dragging: boolean } | null>(null);
+  const suppressClick = useRef(false);
+  const redraw = useRef<() => void>(() => {});
   const sync = useRef<() => void>(() => {});
   const [isPaused, setPaused] = useState(false);
   const [ready, setReady] = useState(false);
+
 
   useEffect(() => {
     const host = stage.current;
@@ -25,12 +31,19 @@ export function LivingEarth({ children }: { children: ReactNode }) {
     let frame = 0;
     let seconds = 0;
     let previous: number | undefined;
+    let samples = 0;
+    let frameMs = 0;
+    let submitMs = 0;
+
+    const draw = () => scene?.render(seconds, orientation.current.yaw, orientation.current.pitch);
+
 
     const stop = () => {
       cancelAnimationFrame(frame);
       frame = 0;
       previous = undefined;
     };
+
 
     const fail = () => {
       terminal = true;
@@ -41,26 +54,44 @@ export function LivingEarth({ children }: { children: ReactNode }) {
       setReady(false);
     };
 
+
     const render = (time: number) => {
       frame = 0;
       if (!scene) return;
-      if (previous !== undefined) seconds = (seconds + Math.min(time - previous, 100) / 1000);
+      const interval = previous === undefined ? 0 : time - previous;
+      if (interval) {
+        const delta = Math.min(interval, 100) / 1000;
+        seconds += delta;
+        orientation.current.yaw = (orientation.current.yaw + delta * 2 * Math.PI / 150) % (2 * Math.PI);
+      }
       previous = time;
       try {
-        scene.render(seconds);
+        const start = performance.now();
+        draw();
+        if (interval) {
+          frameMs += interval;
+          submitMs += performance.now() - start;
+          if (++samples === 120 && host) {
+            host.dataset.earthFrameMs = (frameMs / samples).toFixed(1);
+            host.dataset.earthSubmitMs = (submitMs / samples).toFixed(2);
+            samples = frameMs = submitMs = 0;
+          }
+        }
         frame = requestAnimationFrame(render);
       } catch {
         fail();
       }
     };
 
+
     function resize() {
       if (!scene || !host) return;
       const size = Math.round(host.getBoundingClientRect().width);
       if (!size) return;
       scene.resize(size, Math.min(window.devicePixelRatio || 1, mobile.matches ? 1.25 : 1.5));
-      scene.render(seconds);
+      draw();
     }
+
 
     async function start() {
       // Give the reserved poster a chance to paint before requesting WebGL.
@@ -90,6 +121,7 @@ export function LivingEarth({ children }: { children: ReactNode }) {
       }
     }
 
+
     function update() {
       if (terminal) return;
       if (!visible || document.hidden || reduced.matches) {
@@ -103,6 +135,7 @@ export function LivingEarth({ children }: { children: ReactNode }) {
       if (paused.current) stop();
       else if (scene && !frame) frame = requestAnimationFrame(render);
     }
+
 
     const onVisibility = () => {
       if (visible && !document.hidden && !reduced.matches) {
@@ -132,6 +165,15 @@ export function LivingEarth({ children }: { children: ReactNode }) {
     reduced.addEventListener('change', onPreference);
     surface.addEventListener('webglcontextlost', onContextLost);
     sync.current = update;
+    redraw.current = () => {
+      if (!visible || document.hidden || reduced.matches || frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        try { draw(); } catch { fail(); }
+        update();
+      });
+    };
+
 
     return () => {
       terminal = true;
@@ -144,22 +186,86 @@ export function LivingEarth({ children }: { children: ReactNode }) {
       reduced.removeEventListener('change', onPreference);
       surface.removeEventListener('webglcontextlost', onContextLost);
       sync.current = () => {};
+      redraw.current = () => {};
     };
   }, []);
 
-  function togglePause() {
-    paused.current = !paused.current;
-    setPaused(paused.current);
+
+  function setPlayback(nextPaused: boolean) {
+    paused.current = nextPaused;
+    setPaused(nextPaused);
     sync.current();
   }
+
+
+  function beginDrag(event: PointerEvent<HTMLButtonElement>) {
+    if (!event.isPrimary || event.button !== 0) return;
+    suppressClick.current = false;
+    gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, dragging: false };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+
+  function moveDrag(event: PointerEvent<HTMLButtonElement>) {
+    const pointer = gesture.current;
+    if (!pointer || pointer.id !== event.pointerId) return;
+    const dx = event.clientX - pointer.x;
+    const dy = event.clientY - pointer.y;
+    if (!pointer.dragging) {
+      if (Math.hypot(dx, dy) < 7) return;
+      // Let the browser claim vertical touch gestures for page scrolling.
+      if (event.pointerType === 'touch' && Math.abs(dy) >= Math.abs(dx)) return;
+      pointer.dragging = true;
+      suppressClick.current = true;
+      setPlayback(true);
+    }
+    const sensitivity = 2.7 / event.currentTarget.getBoundingClientRect().width;
+    orientation.current.yaw = (orientation.current.yaw + dx * sensitivity) % (2 * Math.PI);
+    orientation.current.pitch = Math.max(-1.45, Math.min(1.45, orientation.current.pitch + dy * sensitivity));
+    pointer.x = event.clientX;
+    pointer.y = event.clientY;
+    redraw.current();
+  }
+
+
+  function endDrag(event: PointerEvent<HTMLButtonElement>) {
+    if (gesture.current?.id === event.pointerId) gesture.current = null;
+  }
+
 
   return <div className="earth-region">
     <div className="earth-scene" ref={stage} data-earth-ready={ready}>
       {children}
       <canvas ref={canvas} className="earth-canvas" aria-hidden="true" />
+      {ready && <button
+        className="earth-interaction"
+        type="button"
+        aria-label="Automatic globe rotation"
+        aria-pressed={!isPaused}
+        aria-describedby="earth-instructions earth-keyboard"
+        onPointerDown={beginDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onLostPointerCapture={endDrag}
+        onClick={event => {
+          if (event.detail !== 0 && suppressClick.current) return;
+          setPlayback(!paused.current);
+        }}
+        onKeyDown={event => {
+          const direction = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[event.key];
+          if (!direction) return;
+          event.preventDefault();
+          setPlayback(true);
+          orientation.current.yaw += direction[0] * 0.1;
+          orientation.current.pitch = Math.max(-1.45, Math.min(1.45, orientation.current.pitch + direction[1] * 0.1));
+          redraw.current();
+        }}
+      />}
     </div>
-    <div className="earth-motion-slot">{ready && <button type="button" className="earth-motion-control" onClick={togglePause}>
-      {isPaused ? 'Resume motion' : 'Pause motion'}
-    </button>}</div>
+    <div className="earth-motion-slot">{ready && <>
+      <p id="earth-instructions">Tap to {isPaused ? 'resume' : 'pause'} · Drag to explore</p>
+      <span className="sr-only" id="earth-keyboard">Use Enter or Space to toggle rotation, or arrow keys to explore.</span>
+    </>}</div>
   </div>;
 }

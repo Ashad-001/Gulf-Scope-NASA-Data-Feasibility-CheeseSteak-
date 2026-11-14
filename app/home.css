@@ -91,17 +91,14 @@
 .earth-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
 .earth-scene[data-earth-ready="true"] .earth-canvas { opacity: 1; transition: opacity 950ms ease-out; }
 .earth-scene[data-earth-ready="true"] > img { opacity: 0; transition: opacity 950ms ease-out; }
-.earth-motion-control {
-  position: absolute; z-index: 2; right: 6%; bottom: 18%; min-height: 44px;
-  padding: 6px 12px; border: 1px solid var(--wd-ink); border-radius: var(--gs-radius-control);
-  background: var(--wd-surface); color: var(--wd-ink); font-size: 13px; font-weight: 700;
+.earth-interaction {
+  position: absolute; inset: 8.33%; border: 0; border-radius: 50%;
+  touch-action: pan-y pinch-zoom; cursor: grab; user-select: none;
 }
-.earth-motion-control:focus-visible { box-shadow: 0 0 0 4px var(--wd-surface); }
-@media (max-width: 570px) {
-  .earth-motion-control { right: max(7%, calc((100% - 100vw)/2 + 24px)); bottom: 6%; }
-}
+.earth-interaction:active { cursor: grabbing; }
+.earth-interaction:focus-visible { outline-offset: 6px; }
 @media (prefers-reduced-motion: reduce) {
-  .earth-scene[data-earth-ready="true"] .earth-canvas,.earth-motion-control { display: none; }
+  .earth-scene[data-earth-ready="true"] .earth-canvas,.earth-interaction,.earth-motion-slot > * { display: none; }
   .earth-scene[data-earth-ready="true"] > img { opacity: 1; transition: none; }
 }
 /* Shared editorial measures and a hero with separate rows for image and controls. */
@@ -117,10 +114,7 @@
 .earth-scene { width: min(760px, 100%); margin-top: -8px; }
 .earth-scene > img { transform: scale(.899); }
 .earth-motion-slot { display: grid; place-items: center; min-height: 44px; }
-.earth-motion-control {
-  position: static; display: inline-flex; align-items: center;
-  border-color: var(--wd-control); padding-inline: 14px;
-}
+.earth-motion-slot { color: var(--wd-secondary); font-size: 13px; text-align: center; }
 .earth-actions { margin-top: 12px; }
 .earth-cue { color: var(--wd-secondary); }
 .living-section > .living-shell { padding-block: var(--home-section-space); }
@@ -132,7 +126,6 @@
 .evidence-steps { margin: clamp(30px, 3.5vw, 52px) 0 8px; }
 .closing-layout { align-items: center; }
 @media (min-width: 850px) {
-  .earth-motion-slot { justify-self: end; margin-right: max(24px, calc((100% - 1256px) / 2)); }
   .signal-grid h3 { min-height: 2.5em; }
 }
 @media (max-width: 570px) {
