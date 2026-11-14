@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <html lang="en"><body>
     <a className="skip" href="#main">Skip to content</a>
-    <header className="mast"><div className="shell mast-inner">
+    <header className="mast site-mast"><div className="shell mast-inner">
       <Link href="/" className="wordmark">
         {/* The approved Figma export has a fixed 31 × 31 viewport. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}

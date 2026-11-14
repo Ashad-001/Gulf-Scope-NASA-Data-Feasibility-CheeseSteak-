@@ -12,8 +12,8 @@ const StudyMap = dynamic(() => import('./study-map').then(module => module.Study
 const number = new Intl.NumberFormat('en', { maximumFractionDigits: 2 });
 const probability = (value: number) => value < 0.001 ? value.toExponential(2) : value.toFixed(4);
 
-export function Investigation({ locations }: { locations: { id: string; name: string }[] }) {
-  const [location, setLocation] = useState('bahrain');
+export function Investigation({ locations, initialLocation }: { locations: { id: string; name: string }[]; initialLocation: string }) {
+  const [location, setLocation] = useState(initialLocation);
   const [study, setStudy] = useState<Study | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
