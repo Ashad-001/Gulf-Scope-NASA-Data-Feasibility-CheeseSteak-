@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "provider": "NASA GMAO",
+    "product": "MERRA-2",
+    "collection": "M2TMNXSLV",
+    "version": "5.12.4",
+    "doi": "10.5067/AP1B0BA5PD2K",
+    "cmrCollection": "C1276812859-GES_DISC"
+  },
+  "variable": {
+    "id": "T2M",
+    "name": "Monthly mean 2-m air temperature",
+    "dtype": "float32",
+    "sourceUnit": "K",
+    "displayUnit": "°C",
+    "conversion": "°C = K − 273.15"
+  },
+  "grid": {
+    "dimensions": [
+      1,
+      361,
+      576
+    ],
+    "dimensionOrder": [
+      "time",
+      "lat",
+      "lon"
+    ],
+    "spacingDegrees": [
+      0.625,
+      0.5
+    ],
+    "longitudeConvention": "−180° to 179.375° E, ascending"
+  },
+  "cell": {
+    "center": [
+      50.625,
+      26.0
+    ],
+    "indices": {
+      "latitude": 232,
+      "longitude": 369
+    },
+    "bounds": [
+      50.3125,
+      25.75,
+      50.9375,
+      26.25
+    ],
+    "reference": [
+      50.55,
+      26.07
+    ],
+    "containsReference": true,
+    "footprintMethod": "Midpoints to adjacent stored coordinate centres; no source bounds supplied."
+  },
+  "observations": [
+    {
+      "month": "2025-02",
+      "kelvin": 291.07904052734375,
+      "celsius": 17.929040527343773,
+      "granule": "MERRA2_400.tavgM_2d_slv_Nx.202502.nc4",
+      "sha256": "a5cb2ee3c01ccf016da92e2a029524f8e6bfb5855ec31c04cea07ebf50d2010a",
+      "bytes": 78841049,
+      "time": {
+        "value": 0,
+        "units": "minutes since 2025-02-01 00:30:00",
+        "start": "2025-02-01",
+        "end": "2025-02-28",
+        "temporalRange": "1980-01-01 -> 2016-12-31"
+      }
+    },
+    {
+      "month": "2025-03",
+      "kelvin": 293.8893737792969,
+      "celsius": 20.739373779296898,
+      "granule": "MERRA2_400.tavgM_2d_slv_Nx.202503.nc4",
+      "sha256": "1bddb2659bb1431a17f2047b89e7bd9d5c975eb09905dab2d21184530a98452e",
+      "bytes": 78841049,
+      "time": {
+        "value": 0,
+        "units": "minutes since 2025-03-01 00:30:00",
+        "start": "2025-03-01",
+        "end": "2025-03-31",
+        "temporalRange": "1980-01-01 -> 2016-12-31"
+      }
+    }
+  ],
+  "power": {
+    "source": "NASA POWER requested point",
+    "archive": "data/raw/nasa-power-bahrain-2026-11-14T12-43-27.267Z.json",
+    "timeStandard": "LST",
+    "sha256": "c853b14a7fd81574ef6c6154480e34dcf5f355adea4cdbcaae3aaf78d2a6be6a",
+    "observations": [
+      {
+        "month": "2025-02",
+        "celsius": 17.93,
+        "nativeMinusPointCelsius": -0.0009594726562269784
+      },
+      {
+        "month": "2025-03",
+        "celsius": 20.71,
+        "nativeMinusPointCelsius": 0.029373779296896885
+      }
+    ]
+  },
+  "caveats": [
+    "No explicit calendar or time bounds. Granule filenames and granule-level dates identify the monthly periods.",
+    "The separate TemporalRange attribute ends in 2016 and conflicts with the 2025 granule dates.",
+    "No Giovanni comparison has been performed."
+  ]
+}

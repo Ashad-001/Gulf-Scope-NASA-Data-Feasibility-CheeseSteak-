@@ -25,3 +25,4 @@ next-env.d.ts
 *.tsbuildinfo
 lib/generated/
 public/map-workers/
+/data/atlas/bahrain/incoming/*.nc4
