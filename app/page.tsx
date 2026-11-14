@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { AnnualTrace } from '../components/annual-trace';
-import { HomeNav } from '../components/home-nav';
 import { getLocations, getStudy } from '../lib/study';
 import './home.css';
 
@@ -19,18 +18,17 @@ export default function Home() {
   const last = temperature.annual.at(-1)!.year;
   return <div className="living-home">
     <section className="living-hero" aria-labelledby="earth-title">
-      <div className="earth-image" aria-hidden="true" />
-      <div className="earth-glow" aria-hidden="true" />
-      <header className="living-nav">
-        <Link href="/" className="wordmark"><img src="/orbital-g-light.svg" width={31} height={31} alt="" />GulfScope</Link>
-        <HomeNav />
-      </header>
       <div className="earth-copy">
         <p className="living-kicker">NASA POWER / MERRA-2</p>
         <h1 id="earth-title">The Earth leaves signals.<br />We uncover the evidence.</h1>
-        <Link href="/investigate" className="living-cta">Start investigation <span aria-hidden="true">↗</span></Link>
       </div>
-      <a className="earth-cue" href="#study"><span aria-hidden="true">↓</span> Follow the record</a>
+      <div className="earth-scene" aria-hidden="true">
+        <img src="/white-dust-earth.webp" width={960} height={960} alt="" fetchPriority="high" />
+      </div>
+      <div className="earth-actions">
+        <Link href="/investigate" className="living-cta">Start investigation <span aria-hidden="true">↗</span></Link>
+        <a className="earth-cue" href="#study"><span aria-hidden="true">↓</span> Follow the record</a>
+      </div>
     </section>
 
     <section className="living-section" id="study" aria-labelledby="record-title">
@@ -65,10 +63,10 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="living-section living-dark" id="method" aria-labelledby="method-title">
+    <section className="living-section living-method" id="method" aria-labelledby="method-title">
       <div className="living-shell">
         <p className="living-kicker">How the investigation works</p>
-        <h2 id="method-title">From record to evidence</h2>
+        <h2 id="method-title">From observation to evidence</h2>
         <ol className="evidence-steps">{steps.map(([title, description], index) => <li key={title}>
           <span className="step-number" aria-hidden="true">{index + 1}</span><h3>{title}</h3><p>{description}</p>
         </li>)}</ol>
@@ -98,13 +96,15 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="living-section living-dark living-close" aria-labelledby="begin-title">
-      <div className="living-shell">
-        <h2 id="begin-title">Begin your investigation.</h2>
-        <Link href="/investigate" className="living-cta">Open the Bahrain study <span aria-hidden="true">↗</span></Link>
-        <div className="closing-source"><img src="/orbital-g-light.svg" height={31} width={31} alt="" />
-          <a href="https://power.larc.nasa.gov/">NASA POWER · MERRA-2 reanalysis ↗</a>
+    <section className="living-section living-close" aria-labelledby="begin-title">
+      <div className="living-shell closing-layout">
+        <div>
+          <p className="living-kicker">NASA POWER / MERRA-2</p>
+          <h2 id="begin-title">Begin the investigation.</h2>
+          <Link href="/investigate" className="living-cta">Open the Bahrain study <span aria-hidden="true">↗</span></Link>
+          <p className="closing-source">Earth imagery: <a href="https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/">NASA Blue Marble / Reto Stöckli, NASA Earth Observatory (GSFC) ↗</a></p>
         </div>
+        <div className="closing-earth" aria-hidden="true"><img src="/white-dust-earth.webp" width={960} height={960} alt="" loading="lazy" /></div>
       </div>
     </section>
   </div>;

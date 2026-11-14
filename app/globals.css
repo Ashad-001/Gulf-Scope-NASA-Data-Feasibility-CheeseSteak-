@@ -94,3 +94,18 @@ caption{text-align:left;color:var(--muted)}
  .intro,.support-grid,.controls{grid-template-columns:1fr;gap:16px}.intro{padding-block:40px}.panel{padding:16px}.chart-heading{flex-wrap:wrap}.chart{height:255px}
  .investigate-heading{padding-block:30px}.separator{margin-inline:3px}.footer{font-size:11px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.contours path{animation:none;stroke-dasharray:none!important}}
+
+/* Shared White Dust masthead. */
+.site-mast { color: var(--wd-ink); background: var(--wd-paper); border-color: var(--wd-divider); }
+.site-mast .mast-inner { width: calc(100% - 48px); min-height: 64px; }
+.site-mast .home-links { font-weight: 700; }
+.site-mast :focus-visible,.living-home :focus-visible { outline-color: var(--wd-ink); }
+.site-mast .home-menu { display: none; position: relative; }
+.site-mast .home-menu summary { display: flex; gap: 8px; align-items: center; min-height: 44px; color: inherit; list-style: none; }
+.site-mast .home-menu summary::-webkit-details-marker { display: none; }
+.site-mast .home-menu nav { position: absolute; right: 0; top: 100%; display: grid; min-width: 165px; padding: 4px 12px; background: var(--wd-surface); border: 1px solid var(--wd-control); border-radius: var(--gs-radius-control); }
+@media (max-width: 570px) {
+  .site-mast .mast-inner { width: calc(100% - 48px); }
+  .site-mast .home-links { display: none; }
+  .site-mast .home-menu { display: block; }
+}

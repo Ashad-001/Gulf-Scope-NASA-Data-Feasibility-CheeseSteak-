@@ -29,3 +29,15 @@
     --gs-view-duration: 0ms;
   }
 }
+:root {
+  --wd-paper: #fafaf9;
+  --wd-surface: #ffffff;
+  --wd-ink: #17191c;
+  --wd-muted: #74777b;
+  --wd-secondary: #64676b;
+  --wd-control: #d9dcdf;
+  --wd-divider: #e9e9e6;
+  --wd-mean: #b47750;
+  --wd-minimum: #79709b;
+  --wd-precipitation: #54858a;
+}
