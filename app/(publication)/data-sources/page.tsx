@@ -71,7 +71,7 @@ export default function DataSources() {
             <div><dt>PRECTOTCORR</dt><dd>Corrected precipitation rate (mm/day), aggregated to annual estimated depth (mm)</dd></div>
             {variables.filter(row => row.archive === 'extension').map(row => <div key={row.id}><dt>{row.id}</dt><dd>{row.name} ({row.monthlyUnit})</dd></div>)}
           </dl>
-          <div className="publication-links"><a href="https://power.larc.nasa.gov/docs/services/api/temporal/monthly/">NASA POWER monthly API ↗</a><a href="/investigate?mode=series#series-provenance">Inspect archived retrievals ↗</a><Link href="/investigate">Original POWER study ↗</Link></div>
+          <div className="publication-links"><a href="https://power.larc.nasa.gov/docs/services/api/temporal/monthly/">NASA POWER monthly API ↗</a><a href="/investigate?mode=series#series-provenance">Inspect archived retrievals ↗</a><Link href="/investigate">Original Research Archive — NASA POWER ↗</Link></div>
         </div>
         <aside className="publication-tint">
           <p className="publication-label">Important distinction</p>

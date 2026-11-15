@@ -10,11 +10,8 @@
 .pilot-intro nav { margin-top: var(--editorial-space-2); }
 .pilot-entry { padding-block: 8px; font-size: var(--editorial-text-small); }
 .pilot-section { border-top: 1px solid var(--editorial-divider); margin-top: var(--editorial-space-4); padding-block: var(--editorial-space-5) var(--editorial-space-3); }
-.pilot-countries, .pilot-periods { display: grid; gap: var(--editorial-space-3); margin-top: var(--editorial-space-3); }
-.pilot-countries { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-.pilot-countries li { display: grid; gap: 4px; align-content: center; min-width: 0; padding: 10px 12px; border: 1px solid var(--editorial-divider); background: var(--editorial-surface); border-radius: var(--editorial-radius-control); font-size: var(--editorial-text-small); }
-.pilot-countries li span { color: var(--editorial-muted); font-size: var(--editorial-text-label); }
-.pilot-countries li[data-verified=true] { color: var(--editorial-signal); background: var(--editorial-pale-green); border-color: var(--editorial-signal); }
+.pilot-coverage p { max-width: 64ch; margin-block: var(--editorial-space-2); }
+.pilot-coverage a.mission-action { color: var(--mission-night); }
 .pilot-workspace { display: grid; grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr); gap: var(--editorial-space-4); }
 .pilot-workspace-heading { grid-column: 1 / -1; }
 .pilot-geography, .pilot-evidence { min-width: 0; padding: clamp(16px, 2vw, 28px); }
@@ -35,7 +32,7 @@
 .pilot-selected-file { overflow-wrap: anywhere; font-size: var(--editorial-text-label); }
 .pilot-timeline fieldset { min-width: 0; padding: var(--editorial-space-3); background: var(--editorial-surface); margin-top: var(--editorial-space-4); }
 .pilot-timeline legend { font-size: var(--editorial-text-small); font-weight: 700; }
-.pilot-periods { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; }
+.pilot-periods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--editorial-space-3); }
 .pilot-periods label { display: flex; align-items: center; gap: var(--editorial-space-2); min-height: var(--editorial-target); padding: 8px 12px; border: 1px solid var(--editorial-divider); border-radius: var(--editorial-radius-control); font-size: var(--editorial-text-small); cursor: pointer; }
 .pilot-periods label:has(:checked) { background: var(--editorial-pale-green); border-color: var(--editorial-signal); font-weight: 750; }
 .pilot-periods input { accent-color: var(--editorial-signal); }
@@ -47,15 +44,11 @@
 .pilot-provenance dt, .pilot-provenance h3 { font-weight: 700; }
 .pilot-provenance ul { margin-block: var(--editorial-space-3); padding-inline-start: 20px; list-style: disc; }
 .pilot-provenance caption { text-align: left; }
-@media (max-width: 1050px) {
-  .pilot-countries { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
 @media (max-width: 740px) {
   .pilot-workspace { grid-template-columns: minmax(0, 1fr); }
   .pilot-section { padding-top: var(--editorial-space-4); }
 }
 @media (max-width: 570px) {
-  .pilot-countries { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--editorial-space-2); }
   .pilot-provenance dl { grid-template-columns: minmax(0, 1fr); }
   .pilot-provenance dd + dt { margin-top: var(--editorial-space-2); }
 }

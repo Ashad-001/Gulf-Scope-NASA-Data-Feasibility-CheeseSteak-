@@ -14,9 +14,8 @@ const monthLabel = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric
 const formatMonth = (month: string) => monthLabel.format(new Date(month + '-01T00:00:00Z'));
 const subscribeToHydration = () => () => {};
 
-export function BahrainPilotView({ pilot, locations }: {
+export function BahrainPilotView({ pilot }: {
   pilot: BahrainPilot;
-  locations: { id: string; country: string; name: string }[];
 }) {
   const [selected, setSelected] = useState(0);
   const hydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false);
@@ -40,13 +39,10 @@ export function BahrainPilotView({ pilot, locations }: {
       </div>
     </section>
 
-    <section className="pilot-section" aria-labelledby="pilot-region">
+    <section className="pilot-section pilot-coverage" aria-labelledby="pilot-region">
       <h2 id="pilot-region" className="pilot-kicker">Native pilot coverage</h2>
-      <ul className="pilot-countries">{[...locations].sort((a, b) => a.country.localeCompare(b.country)).map(site => <li key={site.id} data-verified={site.id === 'bahrain'}>
-        <strong>{site.country}</strong>
-        <span>{site.id === 'bahrain' ? 'Two verified native months' : 'Regional context only'}</span>
-        <Link href={`/investigate?location=${site.id}`}>{site.name} POWER record</Link>
-      </li>)}</ul>
+      <p>Bahrain is the only study location with a verified native-cell extraction in this pilot. The two readings show how to trace a value to a NASA grid cell and its original granule.</p>
+      <p><Link className="mission-action" href="/investigate?mode=series&location=bahrain">Explore Gulf Climate Data ↗</Link></p>
     </section>
 
     <section className="pilot-section pilot-workspace" aria-labelledby="pilot-title">
@@ -129,9 +125,5 @@ export function BahrainPilotView({ pilot, locations }: {
         </table>
       </details>
     </section>
-    <nav className="orbita-evidence-links" aria-label="Investigation modes">
-      <Link href="/investigate?mode=series">Return to the Field Desk ↗</Link>
-      <Link href="/investigate?location=bahrain">Original POWER point studies ↗</Link>
-    </nav>
   </article>;
 }

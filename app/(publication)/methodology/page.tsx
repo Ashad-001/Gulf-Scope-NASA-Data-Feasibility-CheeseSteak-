@@ -66,7 +66,7 @@ export default function Methodology() {
       <p>Sen’s slope estimates change per decade. Hamed–Rao tests account for serial dependence, with Holm adjustment across the three variables. An approximate 95% moving-block bootstrap interval describes uncertainty in the slope, using four-year blocks. The precipitation bootstrap block-length sensitivity analysis was conducted for Bahrain only.</p>
       <h3>How the field desk compares six sites</h3>
       <p>The field desk evaluates Sen’s slope only when the selected window contains at least 20 consecutive complete annual observations. Hamed–Rao modified Mann–Kendall accounts for serial dependence. Holm adjustment at 0.05 applies to the six sites for one variable and one period; repeated searches are not one corrected family. The approximate 95% interval uses a moving-block bootstrap of the slope, not a band around the time series. The interval and the significance test answer different questions.</p>
-      <div className="publication-links"><Link href="/investigate?mode=series">Open the field desk ↗</Link><Link href="/investigate#method">Original POWER study ↗</Link><Link href="/data-sources">View data sources ↗</Link></div>
+      <div className="publication-links"><Link href="/investigate?mode=series">Open the field desk ↗</Link><Link href="/investigate#method">Original Research Archive — NASA POWER ↗</Link><Link href="/data-sources">View data sources ↗</Link></div>
     </section>
       </div>
     </div>

@@ -7,8 +7,9 @@ import { OrbitaHero } from './orbita-hero';
 import { OrbitaSeriesSelect } from './orbita-series-select';
 import { MissionAtlas } from './mission-atlas';
 import { bahrainPilot } from '../lib/bahrain-pilot';
-import { precipitationMeasurements, precipitationOverview } from '../lib/precipitation-overview.mjs';
-import { PrecipitationComparison } from './precipitation-comparison';
+import { measurementGroups } from '../lib/measurement-overview.mjs';
+import { MeasurementComparison } from './measurement-comparison';
+import { ObservationExplanation } from './observation-explanation';
 
 export type SeriesQuery = Record<string, string | string[] | undefined>;
 const key = (variable: (typeof variables)[number]) => variable.dataset + ':' + variable.id;
@@ -17,16 +18,18 @@ const periodLabel = (period: number) => period > 10000 ? String(period).replace(
 const precision = (value: number) => value.toPrecision(4);
 
 export function SeriesExplorer({ query }: { query: SeriesQuery }) {
-  const overview = query.series === precipitationOverview;
+  const overview = measurementGroups.find(group => group.overview === query.series);
   const definition = variables.find(variable => key(variable) === query.series) ?? variables[0];
   const dataset = pointDatasets[definition.dataset as keyof typeof pointDatasets];
   const records = recordsFor(definition);
   const locationIndex = Math.max(0, locations.findIndex(location => location.id === query.location));
   const location = locations[locationIndex];
-  const defaultStart = overview ? Math.max(...precipitationMeasurements.map(variable => variable.start)) : definition.start;
+  const defaultStart = overview ? Math.max(...overview.definitions.map(variable => variable.start)) : definition.start;
+  const minYear = overview ? Math.min(...overview.definitions.map(variable => variable.start)) : definition.start;
+  const maxYear = overview ? Math.max(...overview.definitions.map(variable => variable.end)) : definition.end;
   const { first, last, valid: usableRange } = selectPeriod(
     overview && (query.first === undefined || query.first === '') ? String(defaultStart) : query.first,
-    query.last, definition.start, definition.end,
+    query.last, minYear, maxYear,
   );
   const monthly = query.resolution === 'monthly';
   const annual = records.map(record => !overview && usableRange && first !== null && last !== null ? filterYears(record.annual, first, last) : []);
@@ -48,16 +51,18 @@ export function SeriesExplorer({ query }: { query: SeriesQuery }) {
     return { ...site, href: '/investigate?' + params.toString() };
   });
 
-  const families = Object.entries(pointDatasets).filter(([id]) => id !== 'native-merra2' && id !== 'power-imerg').map(([id, product]) => ({
-    id, name: product.name, variables: variables.filter(variable => variable.dataset === id && !precipitationMeasurements.includes(variable)).map(variable => ({
+  const grouped = measurementGroups.flatMap(group => group.definitions);
+  const families = Object.entries(pointDatasets).map(([id, product]) => ({
+    id, name: product.name, variables: variables.filter(variable => variable.dataset === id && !grouped.includes(variable)).map(variable => ({
       key: key(variable), name: variable.name + (['imerg', 'smap'].includes(variable.archive) ? ' — not integrated' : ''),
     })),
-  }));
-  families.splice(1, 0, { id: 'precipitation', name: 'Precipitation', variables: [
-    { key: precipitationOverview, name: 'All measurements' },
-    ...precipitationMeasurements.map(variable => ({ key: key(variable), name: variable.id === 'PRECTOTCORR' ? 'NASA POWER corrected precipitation' : 'GPM IMERG precipitation' })),
-  ] });
-  const showNativeCell = location.id === 'bahrain' && ['T2M', 'T2M_MIN_AVG', 'T2M_MAX_AVG'].includes(definition.id);
+  })).filter(family => family.variables.length);
+  families.unshift(...measurementGroups.map(group => ({ id: group.id, name: group.name, variables: [
+    { key: group.overview, name: 'All measurements' },
+    ...group.definitions.map(variable => ({ key: key(variable), name: variable.id === 'PRECTOTCORR' ? 'NASA POWER corrected precipitation' : variable.name })),
+  ] })));
+  const showNativeCell = location.id === 'bahrain' && (overview
+    ? overview.id === 'air-temperature' : ['T2M', 'T2M_MIN_AVG', 'T2M_MAX_AVG'].includes(definition.id));
   const plotProps = { location, unit, monthly, sites: locations, selected, comparison };
 
   return <div className="field-study mission-workspace orbita-desk">
@@ -70,7 +75,7 @@ export function SeriesExplorer({ query }: { query: SeriesQuery }) {
         <input type="hidden" name="mode" value="series" />
         <p><label>Study point <select name="location" defaultValue={location.id}>{locations.map(site =>
           <option key={site.id} value={site.id}>{site.name}</option>)}</select></label></p>
-        <OrbitaSeriesSelect families={families} selected={overview ? precipitationOverview : key(definition)} />
+        <OrbitaSeriesSelect families={families} selected={overview?.overview ?? key(definition)} />
         <fieldset className="orbita-period"><legend>Start / End</legend>
           <input aria-label="First year" name="first" type="number" min={1981} max={2025} defaultValue={!query.first ? '' : first ?? ''} placeholder={String(defaultStart)} />
           <input aria-label="Last year" name="last" type="number" min={1981} max={2025} defaultValue={!query.last ? '' : last ?? ''} placeholder={String(definition.end)} />
@@ -84,11 +89,12 @@ export function SeriesExplorer({ query }: { query: SeriesQuery }) {
       {overview ? <section className="mission-evidence" aria-labelledby="series-evidence">
         <header className="mission-finding">
           <span className="mission-meta">02 / Read the finding</span>
-          <h2 id="series-evidence">{location.name} / Precipitation</h2>
+          <h2 id="series-evidence">{location.name} / {overview.name}</h2>
+          {showNativeCell && <p><Link href="/investigate?mode=native-cell">See the native grid cell</Link> · NASA grid-cell sampling pilot, February–March 2025.</p>}
         </header>
         {usableRange && first !== null && last !== null
-          ? <PrecipitationComparison locationIndex={locationIndex} first={first} last={last} monthly={monthly} />
-          : <p role="status">Choose an ordered range within {definition.start}–{definition.end}.</p>}
+          ? <MeasurementComparison group={overview} locationIndex={locationIndex} first={first} last={last} monthly={monthly} />
+          : <p role="status">Choose an ordered range within {minYear}–{maxYear}.</p>}
       </section> : <section className="mission-evidence" aria-labelledby="series-evidence">
         <header className="mission-finding">
         <span className="mission-meta">02 / Read the finding · {usableRange ? first + '–' + last : 'Check period'}</span>
@@ -124,6 +130,9 @@ export function SeriesExplorer({ query }: { query: SeriesQuery }) {
             <p><a href={study.provenance[0].url}>{dataset.provider} · {definition.id} source ↗</a></p></div>}
         </aside>
         </div>
+        {usableRange && first !== null && last !== null && <ObservationExplanation
+          measurements={[{ definition, displayed: display[locationIndex], record: study, years: annual[locationIndex], trend: target, unit }]}
+          location={location} first={first} last={last} monthly={monthly} />}
         <nav className="orbita-evidence-links" aria-label="Evidence sections">
           {comparison.length > 0 && <a href="#regional-comparison">Compare six sites</a>}
           {selected.length > 0 && <a href="#observed-values">View data table</a>}

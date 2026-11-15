@@ -20,7 +20,7 @@ export default async function Page({ searchParams }: {
     <OrbitaHero scene="bahrain" chapter="04 / Native cell study"
       title={<><span className="orbita-desktop-title">One cell. Two readings.</span><span className="orbita-mobile-title">Inside a single<br /> Earth cell.</span></>}
       description="See how NASA grid-cell sampling works. The verified February–March 2025 extraction demonstrates one native cell and is too short to infer a long-term trend." note="Bahrain / Native MERRA-2" />
-    <BahrainPilotView pilot={bahrainPilot} locations={getLocations()} />
+    <BahrainPilotView pilot={bahrainPilot} />
   </div>;
   const studies = getLocations().map(({ id }) => {
     const study = getStudy(id)!;
@@ -30,8 +30,8 @@ export default async function Page({ searchParams }: {
   const initialLocation = studies.find(study => study.id === location)?.id ?? 'bahrain';
   const example = getStudy('bahrain')!.variables.find(variable => variable.id === 'PRECTOTCORR')!;
   return <div className="orbita-original">
-    <OrbitaHero scene="horizon" chapter="05 / Reference study" title="Original POWER study"
-      description="A point-study reading experience, retained alongside the new field desk." note="1981–2025 / Annual and monthly" />
+    <OrbitaHero scene="horizon" chapter="05 / Reference study" title="Original Research Archive — NASA POWER"
+      description="This archive preserves GulfScope’s initial reproducible scientific investigation, including its published results, methods and source records." note="1981–2025 / Annual and monthly" />
     <section className="orbita-width orbita-original-example" aria-labelledby="original-example">
       <h2 className="orbita-label" id="original-example">Bahrain / Precipitation example</h2>
       <div><p className="mission-slope">{example.trend.slopePerDecade.toFixed(2)} <small>{example.unit} / decade</small></p>
@@ -39,9 +39,8 @@ export default async function Page({ searchParams }: {
       <aside className="orbita-interpretation"><p className="orbita-label">POWER meteorology / Derived from MERRA-2</p>
       <p>{example.annual.length} annual values · {example.monthly.length} months</p></aside>
     </section>
-    <nav className="editorial-shell pilot-entry" aria-label="Investigation modes">
-      <Link href="/investigate?mode=native-cell">Explore Bahrain’s native MERRA-2 cell ↗</Link>
-      {' · '}<Link href="/investigate?mode=series">Explore datasets and historical periods ↗</Link>
+    <nav className="editorial-shell pilot-entry" aria-label="Investigation">
+      <Link href="/investigate?mode=series">Go to Investigation ↗</Link>
     </nav>
     <Investigation key={initialLocation} studies={studies} initialLocation={initialLocation} />
   </div>;

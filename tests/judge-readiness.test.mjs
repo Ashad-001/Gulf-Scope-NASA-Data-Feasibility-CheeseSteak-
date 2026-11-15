@@ -32,7 +32,9 @@ test('Native Bahrain server markup locks the selected month to the initial obser
     return require(id);
   } });
   const pilot = JSON.parse(await read('data/atlas/bahrain/merra2-t2m-pilot.json'));
-  const html = renderToStaticMarkup(createElement(module.exports.BahrainPilotView, { pilot, locations: [] }));
+  const html = renderToStaticMarkup(createElement(module.exports.BahrainPilotView, { pilot }));
+  assert.match(html, /href="\/investigate\?mode=series&amp;location=bahrain"[^>]*>Explore Gulf Climate Data/);
+  assert.doesNotMatch(html, /pilot-countries|href="\/investigate\?location=/);
   assert.match(html, /<fieldset disabled=""><legend>Observation month<\/legend>/);
   const radios = html.match(/<input[^>]+type="radio"[^>]*>/g);
   assert.equal(radios?.length, 2);

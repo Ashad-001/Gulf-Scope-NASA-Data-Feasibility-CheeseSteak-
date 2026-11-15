@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import { preparePrecipitation } from '../lib/precipitation-overview.mjs';
+import { measurementGroups, prepareMeasurements } from '../lib/measurement-overview.mjs';
 import { filterYears, trendFamily } from '../lib/series-analysis.mjs';
 
 const read = async file => JSON.parse(await readFile(new URL('../lib/generated/' + file, import.meta.url), 'utf8'));
@@ -10,6 +10,8 @@ const records = [
   studies.map(study => study.variables.find(variable => variable.id === 'PRECTOTCORR')),
   studies.map(study => expanded.find(record => record.location === study.id && record.id === 'IMERG_PRECTOT')),
 ];
+const precipitation = measurementGroups.find(group => group.id === 'precipitation');
+const preparePrecipitation = (...args) => prepareMeasurements(precipitation.definitions, ...args);
 
 test('annual charts use shared complete years and keep the two site-specific depths in mm', () => {
   for (const site of ['bahrain', 'muscat']) {
