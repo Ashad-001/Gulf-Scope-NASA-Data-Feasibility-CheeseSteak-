@@ -7,8 +7,6 @@ import { useRef } from 'react';
 const links = [
   { href: '/#region', label: 'Regional atlas' },
   { href: '/investigate?mode=series', label: 'Investigation' },
-  { href: '/investigate?mode=native-cell', label: 'Native Bahrain' },
-  { href: '/investigate', label: 'Original NASA POWER' },
   { href: '/methodology', label: 'Methodology' },
   { href: '/data-sources', label: 'Data Sources' },
   { href: '/about', label: 'About' },
@@ -24,7 +22,7 @@ export function HomeNav() {
   return <nav className="orbita-nav" aria-label="Main navigation" data-home={home}>
     <div className="orbita-shortcuts">
       <Link href="/#region">{home ? 'Explore the Atlas' : 'Atlas'} {home && <img src="/orbita/arrow.svg" alt="" />}</Link>
-      {!home && <Link href="/investigate?mode=series">Findings</Link>}
+      {!home && <Link href="/investigate?mode=series">Investigation</Link>}
     </div>
     <details ref={menu} onKeyDown={event => {
       if (event.key === 'Escape' && menu.current?.open) {

@@ -19,7 +19,7 @@ export default async function Page({ searchParams }: {
   if (mode === 'native-cell') return <div className="orbita-native">
     <OrbitaHero scene="bahrain" chapter="04 / Native cell study"
       title={<><span className="orbita-desktop-title">One cell. Two readings.</span><span className="orbita-mobile-title">Inside a single<br /> Earth cell.</span></>}
-      description="A verified two-month reading. Not a climate trend." note="Bahrain / Native MERRA-2" />
+      description="See how NASA grid-cell sampling works. The verified February–March 2025 extraction demonstrates one native cell and is too short to infer a long-term trend." note="Bahrain / Native MERRA-2" />
     <BahrainPilotView pilot={bahrainPilot} locations={getLocations()} />
   </div>;
   const studies = getLocations().map(({ id }) => {
@@ -30,7 +30,7 @@ export default async function Page({ searchParams }: {
   const initialLocation = studies.find(study => study.id === location)?.id ?? 'bahrain';
   const example = getStudy('bahrain')!.variables.find(variable => variable.id === 'PRECTOTCORR')!;
   return <div className="orbita-original">
-    <OrbitaHero scene="horizon" chapter="05 / Original POWER studies" title="The original record."
+    <OrbitaHero scene="horizon" chapter="05 / Reference study" title="Original POWER study"
       description="A point-study reading experience, retained alongside the new field desk." note="1981–2025 / Annual and monthly" />
     <section className="orbita-width orbita-original-example" aria-labelledby="original-example">
       <h2 className="orbita-label" id="original-example">Bahrain / Precipitation example</h2>

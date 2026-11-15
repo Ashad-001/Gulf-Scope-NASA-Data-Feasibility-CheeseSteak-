@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import type { BahrainPilot } from '../lib/bahrain-pilot';
 
 const CellMap = dynamic(() => import('./bahrain-cell-map'), {
@@ -12,12 +12,14 @@ const CellMap = dynamic(() => import('./bahrain-cell-map'), {
 
 const monthLabel = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 const formatMonth = (month: string) => monthLabel.format(new Date(month + '-01T00:00:00Z'));
+const subscribeToHydration = () => () => {};
 
 export function BahrainPilotView({ pilot, locations }: {
   pilot: BahrainPilot;
   locations: { id: string; country: string; name: string }[];
 }) {
   const [selected, setSelected] = useState(0);
+  const hydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false);
   const reading = pilot.observations[selected];
   const point = pilot.power.observations[selected];
   const { source, cell, variable } = pilot;
@@ -89,7 +91,7 @@ export function BahrainPilotView({ pilot, locations }: {
       <p className="pilot-kicker">Follow the record</p>
       <h2 id="pilot-timeline">Move through the observations.</h2>
       <p>The pilot contains two verified months. Select a month to update the reading and its source granule.</p>
-      <fieldset>
+      <fieldset disabled={!hydrated}>
         <legend>Observation month</legend>
         <div className="pilot-periods">{pilot.observations.map((row, index) => <label key={row.month}>
           <input type="radio" name="pilot-month" checked={index === selected} onChange={() => setSelected(index)} />

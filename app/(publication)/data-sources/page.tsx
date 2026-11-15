@@ -71,7 +71,7 @@ export default function DataSources() {
             <div><dt>PRECTOTCORR</dt><dd>Corrected precipitation rate (mm/day), aggregated to annual estimated depth (mm)</dd></div>
             {variables.filter(row => row.archive === 'extension').map(row => <div key={row.id}><dt>{row.id}</dt><dd>{row.name} ({row.monthlyUnit})</dd></div>)}
           </dl>
-          <div className="publication-links"><a href="https://power.larc.nasa.gov/docs/services/api/temporal/monthly/">NASA POWER monthly API ↗</a><Link href="/investigate#provenance">Inspect archived retrievals ↗</Link></div>
+          <div className="publication-links"><a href="https://power.larc.nasa.gov/docs/services/api/temporal/monthly/">NASA POWER monthly API ↗</a><a href="/investigate?mode=series#series-provenance">Inspect archived retrievals ↗</a><Link href="/investigate">Original POWER study ↗</Link></div>
         </div>
         <aside className="publication-tint">
           <p className="publication-label">Important distinction</p>
@@ -98,7 +98,7 @@ export default function DataSources() {
         <li>Coordinate bounds are absent. The pilot footprint uses midpoints between adjacent cell centres.</li>
         {caveats.map(note => <li key={note}>{note}</li>)}
       </ul>
-      <p>Wider native-grid coverage requires additional extraction and coverage checks before publication. Map tiles from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> provide geographic context. Earth imagery is credited to <a href="https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/">Reto Stöckli, NASA Earth Observatory (GSFC), Blue Marble</a>.</p>
+      <p>Wider native-grid coverage requires additional extraction and coverage checks before publication. Map tiles from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> provide geographic context. The cinematic Orbita scenes are illustrative artwork. The separate interactive globe uses <a href="https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/">Blue Marble imagery by Reto Stöckli, NASA Earth Observatory (GSFC)</a>.</p>
     </section>
       </div>
     </div>

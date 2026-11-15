@@ -2,26 +2,28 @@
 
 **Challenge** Be An Earth System Trend Detective!
 
-**Public app** [Insert verified production URL]
+**Summary** GulfScope helps Gulf learners investigate environmental change with NASA data. Start at the cinematic Earth, use the atlas to choose Bahrain, Riyadh, Muscat, Kuwait City, Doha or Abu Dhabi, then examine the selected record in the Field Desk. These are representative study points. The chart, data table, evidence card and provenance disclosure let learners trace a conclusion back to its source.
 
-**Summary** GulfScope turns 45 years of NASA POWER meteorology into an interactive investigation of temperature and precipitation in Bahrain, with Riyadh and Muscat as regional context. Users can inspect annual values, trends, uncertainty, and the NASA sources behind each result.
+## NASA evidence
 
-## Problem and solution
+| Record | What the release uses |
+| --- | --- |
+| NASA POWER meteorology | 1981–2025 monthly MERRA-2-derived point records at all six sites, with 540 months and 45 complete annual values in the verified series. Annual temperatures weight monthly means by calendar days. Annual corrected precipitation depth sums the monthly mean daily rates multiplied by the days in each month. |
+| GPM IMERG precipitation | NASA POWER daily UTC satellite precipitation estimates, 2001–2025 at all six sites. Complete daily depths are summed into monthly and annual totals in mm. NASA documents a 0.1° grid. The response identifies IMERG but omits the exact algorithm version, run and sampled cell centre. |
+| SMAP Level-4 soil moisture | Surface and root-zone volumetric soil moisture estimates from NASA POWER's high-resolution daily UTC Zarr archive. At all six sites the record spans parts of 2015–2025, with nine complete years, 2016–2024. Complete-period means are descriptive. A partial first month and a missing day in 2025 exclude those incomplete periods. POWER regrids the approximately 9 km upstream product to about 0.09°. |
+| Native Bahrain MERRA-2 | Direct NASA GES DISC M2TMNXSLV v5.12.4 granules for February and March 2025. One native cell yielded 17.93 °C and 20.74 °C for monthly 2 m air temperature, rounded after conversion from kelvin. The footprint uses adjacent-coordinate midpoints. Its scale and two-month coverage preclude local detail and trend inference. The archive's TemporalRange ends in 2016 despite the two verified 2025 granules. |
 
-One hot year or a short spell of low rainfall is hard to interpret. GulfScope gives students, educators, and residents a way to explore longer records and judge how much evidence supports a trend. The investigation defaults to Bahrain and provides a map, interactive chart, accessible data table, statistical evidence, and a provenance panel for each site.
+## Findings and methods
 
-## NASA data and findings
+- **Field Desk demonstration.** For Bahrain, annual mean 2 m air temperature increased by about 0.425 °C per decade over 1981–2025 and met the six-site adjusted significance threshold. The same site's POWER precipitation estimate had a slope of approximately −6.68 mm per decade and did not meet that threshold. The point estimate alone cannot substantiate a decline.
+- **Original Bahrain study.** The three outcomes in its Holm family were mean air temperature, mean daily minimum air temperature and estimated annual precipitation depth. The two temperature trends, approximately +0.425 and +0.410 °C per decade, met the adjusted threshold. Precipitation did not. The Field Desk applies Holm across eligible sites for the selected variable and period, so its p-values belong to a different family. [Original Bahrain analysis](ANALYSIS_RESULTS.md)
+- **Statistical safeguards.** The Field Desk tests contiguous annual series with at least 20 complete years. It reports Sen's slope, Hamed–Rao modified Mann–Kendall, Holm adjustment at α = 0.05 and an approximate marginal 95% moving-block bootstrap slope interval. Field Desk intervals use 1,999 replicates. The original Bahrain analysis used 9,999 and documented block-length sensitivity for Bahrain precipitation. Monthly charts display descriptive values. Any accompanying trend evidence still uses complete annual values. A marginal interval and a Holm-adjusted significance decision can disagree.
+- **Interpretation.** Grid estimates represent an area and cannot isolate reclaimed land, provide a country's average, or establish causation. POWER meteorology and the native pilot share MERRA-2 ancestry. Comparing them checks cross-service consistency. Independent ground-station validation has not been demonstrated.
 
-NASA POWER provides MERRA-2 gridded reanalysis. For 1981–2025 we use monthly mean air temperature at 2 m, mean daily minimum air temperature, and corrected precipitation rates. Annual temperatures weight each month by calendar days. Annual precipitation sums estimated depths from the daily rates and each month's length.
+## Technology and attribution
 
-In the Bahrain grid series, annual mean air temperature increased by about **0.425°C per decade** and annual mean daily minimum temperature by **0.410°C per decade**. Both temperature trends met the adjusted significance threshold. Estimated precipitation had a negative slope of **6.68 mm per decade** in magnitude. No statistically significant monotonic precipitation trend was detected. [Full results and intervals](ANALYSIS_RESULTS.md)
+Next.js, React, TypeScript, Three.js, MapLibre GL JS and Recharts support the interactive experience. The application serves archived data and reproducible extractions without live NASA requests from the Field Desk.
 
-Sen's slope estimates trend magnitude. Hamed–Rao modified Mann–Kendall accounts for screened serial dependence. Holm adjustment controls the three comparisons within each site. A moving-block bootstrap estimates the 95% slope interval. The precipitation interval is sensitive to block length. The 0.5° × 0.625° grid cannot resolve individual reclaimed areas or attribute observed trends to causes.
+OpenAI Codex assisted development, verification and writing. OpenAI image generation was used for an earlier orbital concept. The current Orbita scene assets are illustrative artwork from the approved Figma design. The separately credited interactive Blue Marble globe provides geographic imagery. Scientific values and statistics come from archived NASA products and reproducible code. [Full citations and disclosures](SUBMISSION_REFERENCES.md)
 
-Giovanni is listed in the official challenge resources. GulfScope has verified its candidate MERRA-2 product identity. Direct use of its export and Global Awards resource eligibility are pending. [Compliance record](CHALLENGE_RESOURCE_COMPLIANCE.md)
-
-## Technology and disclosure
-
-Next.js, React, TypeScript, Tailwind CSS, Motion, Recharts, and MapLibre GL power the app. Build-time validation connects the displayed values to archived NASA responses and checksums. The app serves these pinned data without calling NASA at runtime.
-
-OpenAI Codex assisted with development, verification workflows, and documentation. OpenAI image generation created the illustrative orbital hero. The illustration is labeled in the app. Scientific values and tests come from the validated NASA data and reproducible code. [References](SUBMISSION_REFERENCES.md)
+Use separate, anonymously accessible links for the final project and the short demo. Confirm the challenge's accepted resource pathway and any local requirements with the organizer before making an eligibility claim. [Competition guidance](https://github.com/nasa/spaceapps/discussions/1827)
