@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=ALLSKY_SFC_SW_DWN&community=AG&start=1984&end=2025&format=JSON&latitude=25.29&longitude=51.53",
+  "retrievedAt": "2026-11-14T23:11:18.314Z",
+  "status": 200,
+  "bodyFile": "nasa-power-doha-solar.json",
+  "bytes": 8669,
+  "sha256": "17bf30c3b38c97fdb569351c20bc7bae8c2fef84d377e01f3366d0db299c8e46"
+}

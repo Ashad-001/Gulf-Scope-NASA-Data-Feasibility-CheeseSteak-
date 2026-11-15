@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=IMERG_PRECTOT&community=AG&start=2001&end=2025&format=JSON&latitude=29.37&longitude=47.97",
+  "retrievedAt": "2026-11-14T23:11:21.958Z",
+  "status": 200,
+  "bodyFile": "nasa-power-kuwait-city-imerg.json",
+  "bytes": 5695,
+  "sha256": "7127929061c3df0eb19413fcf74febf64bd97045c7ac08c164f164d7456fe201"
+}

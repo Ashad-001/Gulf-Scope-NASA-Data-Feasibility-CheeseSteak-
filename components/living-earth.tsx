@@ -29,13 +29,12 @@ export function LivingEarth({ children }: { children: ReactNode }) {
     let visible = false;
     let terminal = false;
     let frame = 0;
-    let seconds = 0;
     let previous: number | undefined;
     let samples = 0;
     let frameMs = 0;
     let submitMs = 0;
 
-    const draw = () => scene?.render(seconds, orientation.current.yaw, orientation.current.pitch);
+    const draw = () => scene?.render(orientation.current.yaw, orientation.current.pitch);
 
 
     const stop = () => {
@@ -61,7 +60,6 @@ export function LivingEarth({ children }: { children: ReactNode }) {
       const interval = previous === undefined ? 0 : time - previous;
       if (interval) {
         const delta = Math.min(interval, 100) / 1000;
-        seconds += delta;
         orientation.current.yaw = (orientation.current.yaw + delta * 2 * Math.PI / 150) % (2 * Math.PI);
       }
       previous = time;

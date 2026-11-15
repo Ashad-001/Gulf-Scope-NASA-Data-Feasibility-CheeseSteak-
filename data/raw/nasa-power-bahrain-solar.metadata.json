@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=ALLSKY_SFC_SW_DWN&community=AG&start=1984&end=2025&format=JSON&latitude=26.07&longitude=50.55",
+  "retrievedAt": "2026-11-14T23:11:14.809Z",
+  "status": 200,
+  "bodyFile": "nasa-power-bahrain-solar.json",
+  "bytes": 8690,
+  "sha256": "ebd9f87512c98854fba9deda04218b9eb62f34e66f41aada84e4d0de3f51dcf8"
+}

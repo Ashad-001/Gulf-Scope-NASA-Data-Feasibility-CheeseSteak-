@@ -1,0 +1,30 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M%2CT2M_MIN_AVG%2CPRECTOTCORR&community=AG&longitude=51.53&latitude=25.29&start=1981&end=2025&format=JSON",
+  "retrievedAt": "2026-11-14T22:49:22.834Z",
+  "status": 200,
+  "contentType": "application/json",
+  "bodyFile": "nasa-power-doha-1981-2025.json",
+  "bytes": 25989,
+  "sha256": "cf9abe938e3bbc483bc5c66320541962cc8490dfa1a63b06f13982bddf33d417",
+  "coordinates": {
+    "latitude": 25.29,
+    "longitude": 51.53,
+    "source": "https://www.geonames.org/290030/doha.html",
+    "convention": "GeoNames capital point rounded to two decimal degrees at request"
+  },
+  "parameters": [
+    "T2M",
+    "T2M_MIN_AVG",
+    "PRECTOTCORR"
+  ],
+  "community": "AG",
+  "units": {
+    "T2M": "C",
+    "T2M_MIN_AVG": "C",
+    "PRECTOTCORR": "mm/day"
+  },
+  "timeStandard": "LST",
+  "firstMonth": "1981-01",
+  "lastMonth": "2025-12",
+  "validMonthsPerParameter": 540
+}

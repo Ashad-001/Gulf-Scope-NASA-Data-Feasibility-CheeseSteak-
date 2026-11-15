@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=SFMC%2CRZMC&community=AG&start=2015&end=2025&format=JSON&latitude=25.29&longitude=51.53",
+  "retrievedAt": "2026-11-14T23:11:26.234Z",
+  "status": 200,
+  "bodyFile": "nasa-power-doha-smap.json",
+  "bytes": 5127,
+  "sha256": "ade45d42eab4973753ede212dee9a4699bba6ef128cc79c29f2c2943ed241f08"
+}

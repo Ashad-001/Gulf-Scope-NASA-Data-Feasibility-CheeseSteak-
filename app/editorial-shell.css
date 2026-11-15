@@ -1,0 +1,147 @@
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+.editorial-shell {
+  width: min(var(--editorial-content), calc(100% - 2 * var(--editorial-gutter)));
+  margin-inline: auto;
+}
+
+.editorial-display {
+  font-family: var(--editorial-font-display);
+  font-size: var(--editorial-text-display);
+  font-weight: 400;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.editorial-header {
+  position: relative;
+  z-index: 5;
+  background: var(--editorial-paper);
+  color: var(--editorial-ink);
+}
+
+.editorial-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--editorial-space-4);
+  min-height: 76px;
+  border-bottom: 1px solid var(--editorial-divider);
+}
+
+.editorial-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--editorial-space-2);
+  min-height: var(--editorial-target);
+  font-weight: 800;
+  font-size: 1.2rem;
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+.editorial-wordmark img { flex: none; }
+.editorial-wordmark small {
+  display: block;
+  margin-top: var(--editorial-space-1);
+  color: var(--editorial-muted);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.editorial-nav,.editorial-footer nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 44px);
+  font-size: var(--editorial-text-small);
+  font-weight: 600;
+}
+
+.editorial-nav a,.editorial-menu a,.editorial-menu summary,.editorial-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--editorial-target);
+  min-width: var(--editorial-target);
+}
+
+.editorial-atlas-link {
+  gap: var(--editorial-space-1);
+  color: var(--editorial-signal);
+  font-weight: 800;
+}
+
+.editorial-header a:hover,.editorial-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: .24em;
+}
+
+.editorial-menu { display: none; position: relative; }
+.editorial-menu summary {
+  justify-content: center;
+  gap: var(--editorial-space-2);
+  color: var(--editorial-signal);
+  font-size: var(--editorial-text-small);
+  font-weight: 800;
+  list-style: none;
+}
+.editorial-menu summary::-webkit-details-marker { display: none; }
+.editorial-menu-indicator::before { content: "+"; }
+.editorial-menu[open] .editorial-menu-indicator::before { content: "−"; }
+.editorial-menu nav {
+  position: absolute;
+  inset: 100% 0 auto auto;
+  display: grid;
+  min-width: min(13rem, calc(100vw - 48px));
+  padding: var(--editorial-space-2) var(--editorial-space-3);
+  background: var(--editorial-surface);
+  border: 1px solid var(--editorial-divider);
+  border-radius: var(--editorial-radius-panel);
+}
+
+.editorial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: var(--editorial-space-2) var(--editorial-space-4);
+  border-top: 1px solid var(--editorial-divider);
+  padding-block: var(--editorial-space-4);
+  color: var(--editorial-muted);
+  font-size: var(--editorial-text-small);
+}
+.editorial-footer-brand { color: var(--editorial-ink); font-size: 1.1rem; font-weight: 800; }
+.editorial-footer nav { flex-wrap: wrap; color: var(--editorial-signal); }
+
+@media (max-width: 570px) {
+  .editorial-header-inner { min-height: 64px; }
+}
+
+@media (max-width: 850px) {
+  .editorial-nav { display: none; }
+  .editorial-menu { display: block; }
+}
+
+/* Apply the display face while retaining each route's current layout and sizing. */
+main :is(h1,h2) {
+  font-family: var(--editorial-font-display);
+  font-optical-sizing: auto;
+}
+
+/* Keep the existing closing artwork's decorative haze inside its section. */
+.living-close { overflow: clip; }

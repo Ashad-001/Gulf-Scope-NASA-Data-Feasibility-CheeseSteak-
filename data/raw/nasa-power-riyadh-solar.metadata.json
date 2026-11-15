@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=ALLSKY_SFC_SW_DWN&community=AG&start=1984&end=2025&format=JSON&latitude=24.71&longitude=46.68",
+  "retrievedAt": "2026-11-14T23:11:15.764Z",
+  "status": 200,
+  "bodyFile": "nasa-power-riyadh-solar.json",
+  "bytes": 8669,
+  "sha256": "852f15a6c92113cf1758f8ee5528ae2951f3a2801d101e471da02590759adfd0"
+}

@@ -1,0 +1,30 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M%2CT2M_MIN_AVG%2CPRECTOTCORR&community=AG&longitude=54.4&latitude=24.45&start=1981&end=2025&format=JSON",
+  "retrievedAt": "2026-11-14T22:49:24.048Z",
+  "status": 200,
+  "contentType": "application/json",
+  "bodyFile": "nasa-power-abu-dhabi-1981-2025.json",
+  "bytes": 26125,
+  "sha256": "445de37bf88242d2dcf9b95797641520bb4ec213b7eb81b6f4bf5a7a2241502f",
+  "coordinates": {
+    "latitude": 24.45,
+    "longitude": 54.4,
+    "source": "https://www.geonames.org/292968/abu-dhabi.html",
+    "convention": "GeoNames capital point rounded to two decimal degrees at request"
+  },
+  "parameters": [
+    "T2M",
+    "T2M_MIN_AVG",
+    "PRECTOTCORR"
+  ],
+  "community": "AG",
+  "units": {
+    "T2M": "C",
+    "T2M_MIN_AVG": "C",
+    "PRECTOTCORR": "mm/day"
+  },
+  "timeStandard": "LST",
+  "firstMonth": "1981-01",
+  "lastMonth": "2025-12",
+  "validMonthsPerParameter": 540
+}

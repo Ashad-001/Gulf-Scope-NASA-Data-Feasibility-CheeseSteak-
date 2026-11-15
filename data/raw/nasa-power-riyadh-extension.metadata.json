@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M_MAX_AVG%2CRH2M%2CWS2M&community=AG&start=1981&end=2025&format=JSON&latitude=24.71&longitude=46.68",
+  "retrievedAt": "2026-11-14T23:11:09.055Z",
+  "status": 200,
+  "bodyFile": "nasa-power-riyadh-extension.json",
+  "bytes": 26213,
+  "sha256": "49e9d5270255a6a79c9b6b8033f15c14e8414f5280cd4ea11dba2c1c22177641"
+}

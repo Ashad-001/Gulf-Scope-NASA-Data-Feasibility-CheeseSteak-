@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=ALLSKY_SFC_SW_DWN&community=AG&start=1984&end=2025&format=JSON&latitude=29.37&longitude=47.97",
+  "retrievedAt": "2026-11-14T23:11:17.725Z",
+  "status": 200,
+  "bodyFile": "nasa-power-kuwait-city-solar.json",
+  "bytes": 8689,
+  "sha256": "fb48fb21ed6734280746f638950f8864a85638f7375e2ebad73f4e34bd03c29b"
+}

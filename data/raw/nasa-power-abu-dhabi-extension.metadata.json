@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M_MAX_AVG%2CRH2M%2CWS2M&community=AG&start=1981&end=2025&format=JSON&latitude=24.45&longitude=54.4",
+  "retrievedAt": "2026-11-14T23:11:14.197Z",
+  "status": 200,
+  "bodyFile": "nasa-power-abu-dhabi-extension.json",
+  "bytes": 26232,
+  "sha256": "258b4f20940e56d9da8d4791d8d1f2984a90c6e40bb9bec2b355b121a375929d"
+}

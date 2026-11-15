@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M_MAX_AVG%2CRH2M%2CWS2M&community=AG&start=1981&end=2025&format=JSON&latitude=29.37&longitude=47.97",
+  "retrievedAt": "2026-11-14T23:11:11.590Z",
+  "status": 200,
+  "bodyFile": "nasa-power-kuwait-city-extension.json",
+  "bytes": 26208,
+  "sha256": "3c235e5f936e56ab4a5d34ae834184a0c95bda2ce2c61eec7744eeb21c940d64"
+}

@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { loadDataset } from './build-analysis-dataset.mjs';
 import { analyzeTrend, holmAdjust } from './trend-analysis.mjs';
+import { generateSeriesCatalog } from './generate-series-catalog.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = path => readFile(new URL(path, root));
@@ -131,7 +132,11 @@ await mkdir(new URL('lib/generated/', root), { recursive: true });
 const studies = [study,
   await buildComparator('riyadh', 'Riyadh', 'Saudi Arabia', 24.71, 46.68),
   await buildComparator('muscat', 'Muscat', 'Oman', 23.59, 58.41),
+  await buildComparator('kuwait-city', 'Kuwait City', 'Kuwait', 29.37, 47.97),
+  await buildComparator('doha', 'Doha', 'Qatar', 25.29, 51.53),
+  await buildComparator('abu-dhabi', 'Abu Dhabi', 'United Arab Emirates', 24.45, 54.40),
 ];
+await generateSeriesCatalog(studies);
 await writeFile(new URL('lib/generated/studies.json', root), JSON.stringify(studies) + '\n');
 await mkdir(new URL('public/map-workers/', root), { recursive: true });
 for (const file of ['maplibre-gl-worker.mjs', 'maplibre-gl-shared.mjs']) {

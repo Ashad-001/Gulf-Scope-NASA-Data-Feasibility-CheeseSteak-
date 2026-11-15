@@ -5,34 +5,37 @@ import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
 const links = [
-  { href: '/#study', label: 'The study' },
-  { href: '/#method', label: 'Method' },
-  { href: '/investigate', label: 'Investigate ↗' },
+  { href: '/#region', label: 'Regional atlas' },
+  { href: '/investigate?mode=series', label: 'Investigation' },
+  { href: '/investigate?mode=native-cell', label: 'Native Bahrain' },
+  { href: '/investigate', label: 'Original NASA POWER' },
+  { href: '/methodology', label: 'Methodology' },
+  { href: '/data-sources', label: 'Data Sources' },
+  { href: '/about', label: 'About' },
 ];
 
 export function HomeNav() {
-  const onHome = usePathname() === "/";
-  const items = onHome ? links.map(item => ({ ...item, href: item.href.replace(/^\/#/, "#") })) : [links[0], { href: "/investigate#method", label: "Methodology" }, links[2]];
   const menu = useRef<HTMLDetailsElement>(null);
   const summary = useRef<HTMLElement>(null);
-  const close = () => { if (menu.current) menu.current.open = false; };
-  return <>
-    <nav className="home-links" aria-label="Main navigation">
-      {items.map(({ href, label }) => <Link key={href} href={href}>{label}</Link>)}
-    </nav>
-    <details className="home-menu" ref={menu} onKeyDown={event => {
+  const home = usePathname() === '/';
+  function closeMenu() {
+    if (menu.current) menu.current.open = false;
+  }
+  return <nav className="orbita-nav" aria-label="Main navigation" data-home={home}>
+    <div className="orbita-shortcuts">
+      <Link href="/#region">{home ? 'Explore the Atlas' : 'Atlas'} {home && <img src="/orbita/arrow.svg" alt="" />}</Link>
+      {!home && <Link href="/investigate?mode=series">Findings</Link>}
+    </div>
+    <details ref={menu} onKeyDown={event => {
       if (event.key === 'Escape' && menu.current?.open) {
-        close();
+        event.preventDefault();
+        closeMenu();
         summary.current?.focus();
       }
     }}>
-      <summary ref={summary}>Menu <span aria-hidden="true">≡</span></summary>
-      <nav aria-label="Mobile navigation">
-        {items.map(({ href, label }) => <Link key={href} href={href} onClick={() => {
-          close();
-          if (href.startsWith('#')) summary.current?.focus({ preventScroll: true });
-        }}>{label}</Link>)}
-      </nav>
+      <summary ref={summary} aria-label="Menu"><span>Menu</span><img src="/orbita/menu.svg" alt="" /></summary>
+      <div className="orbita-menu-links">{links.map(({ href, label }) =>
+        <Link key={href} href={href} onClick={closeMenu}>{label}</Link>)}</div>
     </details>
-  </>;
+  </nav>;
 }

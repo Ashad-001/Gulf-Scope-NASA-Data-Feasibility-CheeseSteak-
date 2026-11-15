@@ -2,7 +2,7 @@ import snapshots from './generated/studies.json';
 
 export type VariableId = 'T2M' | 'T2M_MIN_AVG' | 'PRECTOTCORR';
 type Observation = { year: number; days: number; value: number };
-type Provenance = { url: string; retrievedAt: string; sha256: string; bytes: number; bodyFile: string };
+type Provenance = { url: string; retrievedAt: string; sha256: string; bytes: number; bodyFile: string; coordinates?: { source: string } };
 export type Trend = {
   slopePerYear: number; slopePerDecade: number; intercept: number; significant: boolean; adjustedP: number;
   ordinary: { p: number }; hamedRao: { p: number; selectedLags: number[] };
@@ -31,7 +31,7 @@ export function validateStudy(data: (typeof snapshots)[number]): Study {
   const require = (condition: boolean) => {
     if (!condition) throw new Error('Invalid GulfScope dataset');
   };
-  require(data.schemaVersion === 1 && ['bahrain', 'riyadh', 'muscat'].includes(data.id));
+  require(data.schemaVersion === 1 && ['bahrain', 'riyadh', 'muscat', 'kuwait-city', 'doha', 'abu-dhabi'].includes(data.id));
   require(Number.isFinite(data.latitude) && Math.abs(data.latitude) <= 90 &&
     Number.isFinite(data.longitude) && Math.abs(data.longitude) <= 180);
   require(data.grid.latitude > 0 && data.grid.longitude > 0);
@@ -64,5 +64,7 @@ export function getStudy(id = 'bahrain') {
 }
 
 export function getLocations() {
-  return snapshots.map(({ id, name }) => ({ id, name }));
+  return snapshots.map(({ id, name, region, latitude, longitude }) => ({
+    id, name, country: id === 'bahrain' ? 'Bahrain' : region, latitude, longitude,
+  }));
 }

@@ -1,0 +1,30 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M%2CT2M_MIN_AVG%2CPRECTOTCORR&community=AG&longitude=47.97&latitude=29.37&start=1981&end=2025&format=JSON",
+  "retrievedAt": "2026-11-14T22:49:21.638Z",
+  "status": 200,
+  "contentType": "application/json",
+  "bodyFile": "nasa-power-kuwait-city-1981-2025.json",
+  "bytes": 26024,
+  "sha256": "1c9bdf79aa0198c5fec62c8614fc3c4fa3d734416bacc98995d1e5a2e64a17fb",
+  "coordinates": {
+    "latitude": 29.37,
+    "longitude": 47.97,
+    "source": "https://www.geonames.org/285787/kuwait-city.html",
+    "convention": "GeoNames capital point rounded to two decimal degrees at request"
+  },
+  "parameters": [
+    "T2M",
+    "T2M_MIN_AVG",
+    "PRECTOTCORR"
+  ],
+  "community": "AG",
+  "units": {
+    "T2M": "C",
+    "T2M_MIN_AVG": "C",
+    "PRECTOTCORR": "mm/day"
+  },
+  "timeStandard": "LST",
+  "firstMonth": "1981-01",
+  "lastMonth": "2025-12",
+  "validMonthsPerParameter": 540
+}

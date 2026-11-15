@@ -1,113 +1,96 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { OrbitaHero } from '../components/orbita-hero';
 import { AnnualTrace } from '../components/annual-trace';
 import { LivingEarth } from '../components/living-earth';
+import { MissionAtlas } from '../components/mission-atlas';
 import { getLocations, getStudy } from '../lib/study';
+import { variables } from '../lib/series-catalog.mjs';
 import './home.css';
 
-const steps = [
-  ['Observe', 'Inspect an annual value in NASA’s record.'],
-  ['Measure', 'Estimate change per decade.'],
-  ['Test', 'Assess significance and uncertainty.'],
-  ['Understand', 'Read the limits of the evidence.'],
+const explore = '/investigate?mode=series';
+const links = [
+  ['Air temperature', 'power-merra2:T2M'],
+  ['Corrected precipitation', 'power-merra2:PRECTOTCORR'],
+  ['Relative humidity', 'power-merra2:RH2M'],
+  ['Near-surface wind', 'power-merra2:WS2M'],
+  ['Solar radiation', 'power-solar:ALLSKY_SFC_SW_DWN'],
 ];
 
 export default function Home() {
   const study = getStudy()!;
-  const locations = getLocations().map(({ id }) => getStudy(id)!);
-  const [temperature] = study.variables;
-  const first = temperature.annual[0].year;
-  const last = temperature.annual.at(-1)!.year;
-  return <div className="living-home">
-    <section className="living-hero" aria-labelledby="earth-title">
-      <div className="earth-copy">
-        <p className="living-kicker">NASA POWER / MERRA-2</p>
-        <h1 id="earth-title">The Earth leaves signals.<br />We uncover the evidence.</h1>
+  const temperature = study.variables[0];
+  const order = ['bahrain', 'kuwait-city', 'muscat', 'doha', 'riyadh', 'abu-dhabi'];
+  const points = getLocations().sort((a,b) => order.indexOf(a.id) - order.indexOf(b.id)).map(site => ({ ...site, href: explore + '&location=' + site.id }));
+  const { significant, slopePerDecade } = temperature.trend;
+  return <div className="mission-home">
+    <section className="orbita-opening" aria-labelledby="earth-title">
+      <div className="orbita-orbit-art"><Image src="/orbita/earth.png" fill priority sizes="(max-width: 650px) 1450px, 100vw" alt="" /></div>
+      <div className="orbita-cross" aria-hidden="true"><img src="/orbita/cross.svg" alt="" /></div>
+      <p className="orbita-opening-chapter orbita-label">01 / The Earth Observatory</p>
+      <div className="orbita-opening-copy">
+        <h1 id="earth-title"><span>Read the Earth.</span><span className="orbita-desktop-intro"> Discover how<br /> our region is changing through<br /> decades of real NASA data.</span></h1>
+        <p className="orbita-mobile-copy">Six places. One changing region.<br />Explore the evidence beneath<br /> the surface of our planet.</p>
+        <a className="orbita-mobile-copy orbita-label orbita-open-link" href="#region">Explore the Atlas <img src="/orbita/arrow.svg" alt="" /></a>
       </div>
-      <LivingEarth>
-        <img src="/white-dust-earth.webp" width={960} height={960} alt="" fetchPriority="high" />
-      </LivingEarth>
-      <div className="earth-actions">
-        <Link href="/investigate" className="living-cta">Start investigation <span aria-hidden="true">↗</span></Link>
-        <a className="earth-cue" href="#study"><span aria-hidden="true">↓</span> Follow the record</a>
+      <p className="orbita-opening-note">Six places. Decades of NASA records.<br />A clearer view of environmental<br /> change across the Gulf.</p>
+    </section>
+
+    <section className="orbita-atlas" id="region" aria-labelledby="atlas-heading">
+      <OrbitaHero scene="gulf" chapter="Chapter 02 / Regional atlas" heading="h2" titleId="atlas-heading"
+        title={<><span className="orbita-desktop-title">Six places. One<br /> changing region.</span><span className="orbita-mobile-title">The Gulf,<br /> in view.</span></>}
+        description="Begin with a place. Follow decades of observations to find what changed."
+        note={<>The Gulf is our focus.<br /> A point is a sampling location,<br /> not a national average.</>} />
+      <div className="orbita-width orbita-atlas-index">
+        <p className="orbita-label">Select a study point / 06 locations</p>
+        <ol>{points.map((site,i) => <li key={site.id}><Link href={site.href}>
+          <img src="/orbita/point.svg" alt="" /><span className="orbita-label">{String(i+1).padStart(2,'0')}</span>
+          <span><strong>{site.name}</strong><small>{site.latitude.toFixed(2)}° N / {site.longitude.toFixed(2)}° E</small></span>
+        </Link></li>)}</ol>
+        <p className="orbita-label orbita-atlas-caption">Orbital artwork / Illustrative. Study locations use source coordinates.</p>
+        <details><summary>Open the interactive regional map</summary><MissionAtlas points={points} /></details>
       </div>
     </section>
 
-    <section className="living-section" id="study" aria-labelledby="record-title">
-      <div className="living-shell">
-        <p className="living-kicker">The record / {first}–{last}</p>
-        <h2 id="record-title">{study.completeness.years} years of change</h2>
-        <p className="living-note">Follow Bahrain’s annual mean air temperature from the first year to the latest.</p>
+    <section id="study" className="mission-width mission-observation" aria-labelledby="observation-title">
+      <header><span className="mission-meta">02 / Read the evidence</span><h2 id="observation-title">A changing record.</h2>
+        <p>How much has Bahrain warmed? Start with its annual mean air temperature, then compare the evidence across the region.</p>
+        <p className="mission-slope">{slopePerDecade > 0 ? '+' : ''}{slopePerDecade.toFixed(3)} <small>{temperature.unit} / decade</small></p>
+        <p>{significant ? 'Statistically significant' : 'Not statistically significant'} in the Bahrain point study. A trend does not establish its cause.</p>
+        <Link href={explore + '&location=bahrain'} className="mission-text-link">Open Bahrain’s investigation ↗</Link>
+      </header>
+      <div className="mission-figure">
+        <p className="mission-meta">NASA POWER / {study.firstMonth.slice(0, 4)}–{study.lastMonth.slice(0, 4)}</p>
         <AnnualTrace readings={temperature.annual} name="Bahrain mean air temperature" unit={temperature.unit} />
+        <details><summary>Other Bahrain point-study signals</summary>
+          {study.variables.slice(1).map(variable => <div className="mission-mini-trace" key={variable.id}>
+            <h3>{variable.name}</h3>
+            <p>{variable.trend.slopePerDecade.toFixed(variable.unit === '°C' ? 3 : 2)} {variable.unit} per decade · {variable.trend.significant ? 'Statistically significant' : 'Not statistically significant'}</p>
+            <AnnualTrace readings={variable.annual} name={variable.name} unit={variable.unit} compact />
+          </div>)}
+        </details>
       </div>
     </section>
 
-    <section className="living-section living-signals" aria-labelledby="signals-title">
-      <div className="living-shell">
-        <p className="living-kicker">The Bahrain record / {first}–{last}</p>
-        <h2 id="signals-title">Three environmental signals</h2>
-        <div className="signal-grid">
-          {study.variables.map(variable => {
-            const { significant, slopePerDecade } = variable.trend;
-            const value = Math.abs(slopePerDecade).toFixed(variable.unit === '°C' ? 3 : 2);
-            const prefix = slopePerDecade < 0 ? '−' : slopePerDecade > 0 ? '+' : '';
-            return <article key={variable.id} data-variable={variable.id}>
-              <h3>{variable.name}</h3>
-              <p className="signal-slope">{prefix}{value} <span>{variable.unit} / decade</span></p>
-              <p className={significant ? 'signal-status' : 'signal-status inconclusive'}>
-                <span aria-hidden="true">{significant ? '●' : '◇'}</span> {significant ? 'Statistically significant' : 'Not statistically significant'}
-              </p>
-              <AnnualTrace readings={variable.annual} name={variable.name} unit={variable.unit} compact />
-            </article>;
-          })}
-        </div>
-        <p className="living-note">Use a trace’s year control to inspect an annual value. The significance labels use Holm-adjusted tests across the three outcomes.</p>
-      </div>
+    <section id="method" className="mission-width mission-records" aria-labelledby="records-title">
+      <header><span className="mission-meta">03 / Choose a signal</span><h2 id="records-title">Look for what changed.</h2>
+        <p>Compare observations on shared dates and units. Check the slope, uncertainty and source before drawing a conclusion.</p>
+        <Link className="mission-text-link" href="/methodology">How we test a trend ↗</Link></header>
+      <ul className="mission-record-index">{links.map(([label, id], i) => {
+        const variable = variables.find(v => v.dataset + ':' + v.id === id)!;
+        return <li key={id}><Link href={explore + '&series=' + encodeURIComponent(id)}>
+          <span className="mission-meta">{String(i + 1).padStart(2, '0')}</span><strong>{label}</strong><small>{variable.start}–{variable.end}</small><span aria-hidden="true">↗</span>
+        </Link></li>;
+      })}</ul>
     </section>
-
-    <section className="living-section" aria-labelledby="gulf-title">
-      <div className="living-shell">
-        <p className="living-kicker">The study locations</p>
-        <h2 id="gulf-title">A changing Gulf</h2>
-        <div className="gulf-map" role="group" aria-label="Schematic map of GulfScope study locations"><div className="gulf-map-plane">
-          <img src="/gulf-context.svg" width={1248} height={350} loading="lazy" alt="" />
-          {locations.map(site => {
-            const x = 624 + (site.longitude - 52.5) * (302 / 13);
-            const y = 175 + (26 - site.latitude) * (302 / 13);
-            return <Link key={site.id} href={`/investigate?location=${site.id}`} className="gulf-pin"
-              style={{ left: `${x / 12.48}%`, top: `${y / 3.5}%` }} aria-label={`Investigate ${site.name}`}>
-              <span aria-hidden="true" />{site.name}
-            </Link>;
-          })}
-        </div></div>
-        <ul className="gulf-links">{locations.map(site => <li key={site.id}>
-          <Link href={`/investigate?location=${site.id}`}>{site.name} <span aria-hidden="true">↗</span></Link>
-          <span>{site.latitude.toFixed(2)}° N · {site.longitude.toFixed(2)}° E</span>
-        </li>)}</ul>
-        <p className="living-note">The three sampling points put Bahrain’s record in regional context. The map is schematic.</p>
-      </div>
-    </section>
-
-    <section className="living-section living-method" id="method" aria-labelledby="method-title">
-      <div className="living-shell">
-        <p className="living-kicker">How the investigation works</p>
-        <h2 id="method-title">From observation to evidence</h2>
-        <p className="living-note">The same four steps guide each regional investigation.</p>
-        <ol className="evidence-steps">{steps.map(([title, description], index) => <li key={title}>
-          <span className="step-number" aria-hidden="true">{index + 1}</span><h3>{title}</h3><p>{description}</p>
-        </li>)}</ol>
-      </div>
-    </section>
-
-    <section className="living-section living-close" aria-labelledby="begin-title">
-      <div className="living-shell closing-layout">
-        <div>
-          <p className="living-kicker">NASA POWER / MERRA-2</p>
-          <h2 id="begin-title">Begin the investigation.</h2>
-          <Link href="/investigate" className="living-cta">Open the Bahrain study <span aria-hidden="true">↗</span></Link>
-          <p className="closing-source">Earth imagery: <a href="https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/">NASA Blue Marble / Reto Stöckli, NASA Earth Observatory (GSFC) ↗</a></p>
-        </div>
-        <div className="closing-earth" aria-hidden="true"><img src="/white-dust-earth.webp" width={960} height={960} alt="" loading="lazy" /></div>
-      </div>
-    </section>
+    <aside className="mission-native-callout"><div className="mission-width">
+      <span className="mission-meta">Separate native-grid case study</span><h2>Bahrain in one MERRA-2 cell.</h2>
+      <p>See how two authenticated granules become two observations on their original grid.</p>
+      <Link className="mission-action" href="/investigate?mode=native-cell">Inspect the native cell ↗</Link>
+    </div></aside>
+    <details className="orbita-width orbita-extra-globe"><summary>Explore the interactive Blue Marble globe</summary>
+      <div><LivingEarth><img src="/white-dust-earth.webp" width={960} height={960} alt="" /></LivingEarth></div>
+      <a href="https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/">NASA Blue Marble · Reto Stöckli / Earth Observatory</a>
+    </details>
   </div>;
 }

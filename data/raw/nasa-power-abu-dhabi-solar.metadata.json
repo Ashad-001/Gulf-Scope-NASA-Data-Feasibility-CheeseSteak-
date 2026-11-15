@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=ALLSKY_SFC_SW_DWN&community=AG&start=1984&end=2025&format=JSON&latitude=24.45&longitude=54.4",
+  "retrievedAt": "2026-11-14T23:11:19.262Z",
+  "status": 200,
+  "bodyFile": "nasa-power-abu-dhabi-solar.json",
+  "bytes": 8676,
+  "sha256": "2bcd8cdfd5575650820e0aa389659a92fb34a80ed2f641346675d4abfcda1ff1"
+}

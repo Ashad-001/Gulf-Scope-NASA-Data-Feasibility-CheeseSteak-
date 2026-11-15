@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=IMERG_PRECTOT&latitude=23.59&longitude=58.41&start=20010101&end=20251231&format=JSON&time-standard=UTC&community=AG",
+  "retrievedAt": "2026-11-15T06:59:00.462Z",
+  "status": 200,
+  "bodyFile": "nasa-power-muscat-imerg-daily.json",
+  "bytes": 138250,
+  "sha256": "ffe5ef1ce0d4e25b9c0c77f202684d780fa4a93e8a84cc52fad74eac9f028b53"
+}

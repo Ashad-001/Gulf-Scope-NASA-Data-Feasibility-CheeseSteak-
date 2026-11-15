@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=SFMC%2CRZMC&community=AG&start=2015&end=2025&format=JSON&latitude=23.59&longitude=58.41",
+  "retrievedAt": "2026-11-14T23:11:24.876Z",
+  "status": 200,
+  "bodyFile": "nasa-power-muscat-smap.json",
+  "bytes": 5128,
+  "sha256": "cc77f06f92dffe3f4745528a14bf080efe9231f3cc1e1e01246c09f352ec0d79"
+}

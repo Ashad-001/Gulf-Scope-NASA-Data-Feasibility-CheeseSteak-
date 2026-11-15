@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=T2M_MAX_AVG%2CRH2M%2CWS2M&community=AG&start=1981&end=2025&format=JSON&latitude=26.07&longitude=50.55",
+  "retrievedAt": "2026-11-14T23:11:07.804Z",
+  "status": 200,
+  "bodyFile": "nasa-power-bahrain-extension.json",
+  "bytes": 26224,
+  "sha256": "0942d405cad0da6ff307697b735cc9f3ac8c16d9f5debf662590415be4fe6a8e"
+}

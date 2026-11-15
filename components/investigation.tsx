@@ -8,8 +8,8 @@ type AnnualStudy = Omit<Study, 'variables'> & { variables: Omit<Study['variables
 const Skeleton = () => <div className="field-plot field-skeleton" role="status">Loading chart…</div>;
 const Chart = dynamic(() => import('./evidence-chart'), { ssr: false, loading: Skeleton });
 const Map = dynamic(() => import('./study-map').then(module => module.StudyMap), { ssr: false });
-const colors = ['#286750', '#65548b', '#176b86'];
-const dashes = [undefined, '6 4', '2 3'];
+const colors = ['#105bd8', '#a33c29', '#087180', '#6643a7', '#8b5500', '#354b6b'];
+const dashes = [undefined, '7 3', '2 3', '10 4', '8 3 2 3', '3 4 7 4'];
 const probability = (value: number) => value < .001 ? value.toExponential(2) : value.toFixed(5);
 const signed = (value: number, unit: string) =>
   (value < 0 ? '−' : value > 0 ? '+' : '') + Math.abs(value).toFixed(unit === '°C' ? 3 : 2);
@@ -131,25 +131,34 @@ export function Investigation({ studies, initialLocation }: { studies: AnnualStu
     }}>
     <header className="field-header">
       <div className="field-shell">
-        <p className="field-kicker">Study {String(studies.indexOf(study) + 1).padStart(2, '0')} / {study.region} / {start}–{end}</p>
-        <h1>{title}</h1>
+        <p className="field-kicker">NASA POWER representative point / {study.id === 'bahrain' ? 'Bahrain' : study.region} / {start}–{end}</p>
+        <h2>{title}</h2>
         <p className="field-lead">{warming
           ? `${variable.name} increased by ${Math.abs(trend.slopePerDecade).toFixed(3)} °C per decade.`
           : `${variable.name} · ${slope} ${unit} per decade. ${status}.`}</p>
         <p className="field-meta">{study.source} · {study.product} / {study.latitude.toFixed(2)}° N, {study.longitude.toFixed(2)}° E</p>
+        <p className="field-meta">One model-derived point per country. The values represent the requested location rather than a country-wide average.</p>
+        <a className="field-link regional-jump" href="#regional-comparison">Compare six locations ↓</a>
       </div>
     </header>
     <div className="field-shell field-content">
       <div className="field-selectors">
-        <fieldset><legend>Study location</legend><div className="field-options locations">
+        <fieldset><legend>GCC country and study location</legend><div className="field-options locations">
           {studies.map(site => <button key={site.id} type="button" aria-pressed={site.id === location}
-            onClick={() => selectLocation(site.id)}>{site.name}</button>)}
+            onClick={() => selectLocation(site.id)}>{site.id === 'bahrain' ? 'Bahrain' : <>{site.region}<br /><small>{site.name}</small></>}</button>)}
         </div></fieldset>
         <fieldset><legend>Environmental variable</legend><div className="field-options variables">
           {study.variables.map(item => <button key={item.id} type="button" aria-label={item.name} aria-pressed={item.id === id}
             onClick={() => { changeSelection(); setId(item.id); }}>{item.short}</button>)}
         </div></fieldset>
       </div>
+
+      <section ref={geography} className="field-panel field-geography" aria-labelledby="geography-title">
+        <p className="field-kicker">Requested point / NASA POWER</p>
+        <h2 id="geography-title">{study.name} sampling point</h2>
+        {mapReady ? <Map key={location} study={study} /> : <div className="map map-placeholder">Map loads near this section.</div>}
+        <p className="field-meta">{study.latitude.toFixed(2)}° N / {study.longitude.toFixed(2)}° E · {study.grid.latitude}° latitude × {study.grid.longitude}° longitude spacing of the underlying meteorological grid.</p>
+      </section>
 
       <button type="button" className="field-link" aria-expanded={guide !== null} onClick={() => setGuide(guide === null ? 0 : null)}>Guided evidence walkthrough</button>
       {guide !== null && <aside className="field-guide" aria-label="Evidence walkthrough">
@@ -165,7 +174,7 @@ export function Investigation({ studies, initialLocation }: { studies: AnnualStu
           <h2 id="annual-title">{variable.name}</h2>
           <label className="check"><input type="checkbox" checked={showTrend} onChange={event => setShowTrend(event.target.checked)} /> Sen trend line</label>
           <div onMouseLeave={() => setHover(undefined)}>
-            <Chart rows={variable.annual.map(row => ({
+            <Chart key={`${location}:${id}`} rows={variable.annual.map(row => ({
               year: row.year, value: row.value, fitted: trend.intercept + trend.slopePerYear * (row.year - start),
             }))} series={[
               { key: 'value', name: 'Annual value', color: colors[0] },
@@ -188,7 +197,7 @@ export function Investigation({ studies, initialLocation }: { studies: AnnualStu
             </div>
           </div>
           <details><summary>View annual values</summary>
-            <div className="table-scroll"><table><caption>{study.name} · {variable.name} ({unit})</caption>
+            <div className="table-scroll"><table><caption>{study.name} · {id === 'PRECTOTCORR' ? 'Estimated annual precipitation depth' : variable.name} ({unit})</caption>
               <thead><tr><th scope="col">Year</th><th scope="col">Annual value</th></tr></thead>
               <tbody>{variable.annual.map(row => <tr key={row.year}><th scope="row">{row.year}</th><td>{row.value.toFixed(2)}</td></tr>)}</tbody>
             </table></div>
@@ -196,7 +205,7 @@ export function Investigation({ studies, initialLocation }: { studies: AnnualStu
           <details><summary>Monthly detail</summary>
             {monthly?.key === monthlyKey ? <>
               {variable.originalUnit !== unit && <p>Monthly values are reported in the source unit, {variable.originalUnit}.</p>}
-              <div className="table-scroll"><table><caption>{study.name} · {variable.name} ({variable.originalUnit})</caption>
+              <div className="table-scroll"><table><caption>{study.name} · {id === 'PRECTOTCORR' ? 'Monthly mean daily precipitation rate' : variable.name} ({variable.originalUnit})</caption>
                 <thead><tr><th scope="col">Month</th><th scope="col">Source value</th></tr></thead>
                 <tbody>{monthly.rows.map(row => <tr key={`${row.year}-${row.month}`}><th scope="row">{row.year}-{String(row.month).padStart(2, '0')}</th><td>{row.value}</td></tr>)}</tbody>
               </table></div>
@@ -225,30 +234,23 @@ export function Investigation({ studies, initialLocation }: { studies: AnnualStu
         </section>
       </div>
 
-      <section className="field-panel field-compare" aria-labelledby="compare-title">
+      <section id="regional-comparison" className="field-panel field-compare" aria-labelledby="compare-title">
         <p className="field-kicker">Regional comparison / {variable.short}</p>
-        <h2 id="compare-title">Compare the three records</h2>
-        <Chart rows={regionalRows} series={comparison.map(item => ({
+        <h2 id="compare-title">Six points on one time axis</h2>
+        <Chart key={id} rows={regionalRows} series={comparison.map(item => ({
           key: item.site.id, name: item.site.name, color: item.color, dash: item.dash,
         }))} unit={unit} />
         <ul>{comparison.map(item => <li key={item.site.id}>
-          <strong style={{ color: item.color }}>{item.site.name}</strong> {signed(item.variable.trend.slopePerDecade, unit)} {unit}/decade
+          <svg aria-hidden="true" className="comparison-swatch" width="26" height="10"><line x1="0" x2="26" y1="5" y2="5" stroke={item.color} strokeWidth="2" strokeDasharray={item.dash} /></svg> <strong>{item.site.name}</strong> {signed(item.variable.trend.slopePerDecade, unit)} {unit}/decade
         </li>)}</ul>
-        <p className="field-meta">{start}–{end} · Shared {unit} scale. The comparison describes the three records. Each site has its own trend tests.</p>
-      </section>
-
-      <section ref={geography} className="field-panel field-geography" aria-labelledby="geography-title">
-        <p className="field-kicker">Sampling geography / MapLibre</p>
-        <h2 id="geography-title">{study.name} sampling point</h2>
-        {mapReady ? <Map key={location} study={study} /> : <div className="map map-placeholder">Map loads near this section.</div>}
-        <p className="field-meta">{study.latitude.toFixed(2)}° N / {study.longitude.toFixed(2)}° E · {study.grid.latitude}° latitude × {study.grid.longitude}° longitude native grid spacing.</p>
+        <p className="field-meta">{start}–{end} · Shared {unit} scale. Each series describes a requested POWER point rather than a national average. Each site has its own trend tests.</p>
       </section>
 
       <section className="field-panel field-sources" id="provenance" aria-labelledby="source-title">
         <p className="field-kicker">Evidence and limitations</p><h2 id="source-title">Follow the source</h2>
         <details><summary>NASA retrievals and SHA‑256</summary>
           <p>{study.source} · {study.product}. {study.completeness.months} complete months, {study.completeness.missing} missing.</p>
-          <ul>{study.provenance.map(file => <li key={file.sha256}><a href={file.url}>{file.bodyFile} ↗</a><br /><time>{file.retrievedAt}</time><br /><code>{file.sha256}</code></li>)}</ul>
+          <ul>{study.provenance.map(file => <li key={file.sha256}><a href={file.url}>{file.bodyFile} ↗</a><br /><time>{file.retrievedAt}</time><br /><code>{file.sha256}</code>{file.coordinates && <><br /><a href={file.coordinates.source}>City coordinates: GeoNames ↗</a></>}</li>)}</ul>
         </details>
         <details id="method"><summary>Methods and bootstrap uncertainty</summary><p>{variable.description}</p><p>{study.methodology.analysis}</p><p>{study.methodology.interval}</p></details>
         <details><summary>Model grid and limits of inference</summary><p>{study.methodology.limits}</p></details>

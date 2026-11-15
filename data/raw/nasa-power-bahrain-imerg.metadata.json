@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=IMERG_PRECTOT&community=AG&start=2001&end=2025&format=JSON&latitude=26.07&longitude=50.55",
+  "retrievedAt": "2026-11-14T23:11:19.751Z",
+  "status": 200,
+  "bodyFile": "nasa-power-bahrain-imerg.json",
+  "bytes": 5694,
+  "sha256": "d53121a661dd31fef628a7dbd0d7df8d3fa418ecc9922c463126bc60cfedf0e2"
+}

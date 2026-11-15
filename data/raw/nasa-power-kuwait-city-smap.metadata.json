@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=SFMC%2CRZMC&community=AG&start=2015&end=2025&format=JSON&latitude=29.37&longitude=47.97",
+  "retrievedAt": "2026-11-14T23:11:25.721Z",
+  "status": 200,
+  "bodyFile": "nasa-power-kuwait-city-smap.json",
+  "bytes": 5127,
+  "sha256": "ec89488f19f95fde956add7f47033a37a7c4ac1a2d5c6cc5efd79ff5312e23c6"
+}

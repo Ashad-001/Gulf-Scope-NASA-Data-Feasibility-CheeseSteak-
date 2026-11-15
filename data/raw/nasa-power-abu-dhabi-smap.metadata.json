@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=SFMC%2CRZMC&community=AG&start=2015&end=2025&format=JSON&latitude=24.45&longitude=54.4",
+  "retrievedAt": "2026-11-14T23:11:27.084Z",
+  "status": 200,
+  "bodyFile": "nasa-power-abu-dhabi-smap.json",
+  "bytes": 5125,
+  "sha256": "33487e510a33292ce7050f6992bba603d19c831821ebae7f175d25476f428414"
+}

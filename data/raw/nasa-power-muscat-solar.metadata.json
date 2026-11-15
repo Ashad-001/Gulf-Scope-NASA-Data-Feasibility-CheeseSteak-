@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=ALLSKY_SFC_SW_DWN&community=AG&start=1984&end=2025&format=JSON&latitude=23.59&longitude=58.41",
+  "retrievedAt": "2026-11-14T23:11:16.752Z",
+  "status": 200,
+  "bodyFile": "nasa-power-muscat-solar.json",
+  "bytes": 8692,
+  "sha256": "3fdaf02cdabb6c07156556e4b50a5560234406778803cc51da001f8cc43271a9"
+}

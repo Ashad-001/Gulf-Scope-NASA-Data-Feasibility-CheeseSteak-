@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=IMERG_PRECTOT&latitude=25.29&longitude=51.53&start=20010101&end=20251231&format=JSON&time-standard=UTC&community=AG",
+  "retrievedAt": "2026-11-15T06:59:02.378Z",
+  "status": 200,
+  "bodyFile": "nasa-power-doha-imerg-daily.json",
+  "bytes": 138622,
+  "sha256": "5c7c30759ee5c8e74313e9add7da54e4c713c0c96803f69cb51ca16d0b52f29c"
+}

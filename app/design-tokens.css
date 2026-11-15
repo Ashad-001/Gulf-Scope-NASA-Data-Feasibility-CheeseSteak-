@@ -41,3 +41,41 @@
   --wd-minimum: #79709b;
   --wd-precipitation: #54858a;
 }
+
+/* Editorial tokens coexist with the route-specific legacy palettes. */
+:root {
+  --editorial-paper: #f3f7fc;
+  --editorial-surface: #ffffff;
+  --editorial-pale-green: #e7f0fc;
+  --editorial-ink: #111e33;
+  --editorial-muted: #46566b;
+  --editorial-signal: #105bd8;
+  --editorial-divider: #c9d6e8;
+  --editorial-font-display: "Manrope", "Segoe UI", sans-serif;
+  --editorial-font-body: "Manrope", "Segoe UI", sans-serif;
+  --editorial-text-label: .75rem;
+  --editorial-text-small: .875rem;
+  --editorial-text-body: 1rem;
+  --editorial-text-heading: clamp(1.75rem, 1.35rem + 1.5vw, 3rem);
+  --editorial-text-display: clamp(2.5rem, 1.7rem + 3.6vw, 5.5rem);
+  --editorial-space-1: 4px;
+  --editorial-space-2: 8px;
+  --editorial-space-3: 16px;
+  --editorial-space-4: 24px;
+  --editorial-space-5: 40px;
+  --editorial-space-6: 64px;
+  --editorial-space-7: 96px;
+  --editorial-radius-control: 4px;
+  --editorial-radius-panel: 8px;
+  --editorial-gutter: clamp(24px, 6.1vw, 88px);
+  --editorial-content: 1264px;
+  --editorial-measure: 65ch;
+  --editorial-target: 44px;
+  --editorial-focus-color: var(--editorial-signal);
+  --editorial-focus-width: 2px;
+  --editorial-focus-offset: 4px;
+}
+
+@media (max-width: 570px) {
+  :root { --editorial-gutter: 24px; }
+}

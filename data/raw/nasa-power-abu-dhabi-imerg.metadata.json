@@ -1,0 +1,8 @@
+{
+  "url": "https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=IMERG_PRECTOT&community=AG&start=2001&end=2025&format=JSON&latitude=24.45&longitude=54.4",
+  "retrievedAt": "2026-11-14T23:11:22.945Z",
+  "status": 200,
+  "bodyFile": "nasa-power-abu-dhabi-imerg.json",
+  "bytes": 5693,
+  "sha256": "f944aca0b4a367b1cb97feca329803bdc721203086791203e75841a62d91025e"
+}

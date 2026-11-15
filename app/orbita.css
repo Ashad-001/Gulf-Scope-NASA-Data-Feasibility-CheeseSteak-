@@ -1,0 +1,191 @@
+@font-face{font-family:Barlow Condensed;src:url('/fonts/BarlowCondensed-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+@font-face{font-family:Barlow Condensed;src:url('/fonts/BarlowCondensed-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:Barlow Condensed;src:url('/fonts/BarlowCondensed-Medium.ttf') format('truetype');font-weight:500 800;font-display:swap}
+@font-face{font-family:DM Mono;src:url('/fonts/DMMono-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+.orbita{
+  --orbita-display:"Barlow Condensed","Arial Narrow",sans-serif;--orbita-mono:"DM Mono",Consolas,monospace;
+  --orbita-navy:#071721;--orbita-warm:#f0ece3;--orbita-panel:#f8f5ed;--orbita-gold:#d09d6b;
+  --orbita-brown:#865c42;--orbita-quiet:#597078;--orbita-line:#c9ccc4;--orbita-white:#f5f2eb;
+  --orbita-gutter:clamp(20px,3.3vw,52px);
+  --mission-serif:var(--orbita-display);--mission-paper:var(--orbita-warm);--mission-ink:#132832;--mission-muted:#4b646c;
+  --mission-line:var(--orbita-line);--mission-night:var(--orbita-navy);--mission-gold:var(--orbita-gold);
+  --editorial-font-display:var(--orbita-display);--editorial-font-body:var(--orbita-display);
+  --editorial-paper:var(--orbita-warm);--editorial-surface:var(--orbita-panel);--editorial-ink:#132832;--editorial-muted:#4b646c;
+  --editorial-signal:#315962;--editorial-divider:#c9ccc4;--editorial-pale-green:#e6e7df;
+  font-family:var(--orbita-display);font-size:18px;background:var(--orbita-warm);
+}
+.orbita-width{width:calc(100% - 2 * var(--orbita-gutter));max-width:1550px;margin-inline:auto}
+.orbita :is(.mission-meta,.orbita-label,.publication-label,.pilot-kicker){font:400 .73rem/1.55 var(--orbita-mono);text-transform:uppercase;letter-spacing:.035em}
+.orbita-label{color:var(--orbita-brown)}
+.orbita-header{position:absolute;inset:0 0 auto;z-index:8;color:var(--orbita-white)}
+.orbita-header-inner{width:calc(100% - 2 * clamp(20px,2.6vw,48px));margin-inline:auto;min-height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f5f2eb52}
+.orbita-wordmark{font-size:27px;line-height:1;font-weight:300;letter-spacing:.095em;text-transform:uppercase;padding-block:12px}
+.orbita-nav{display:flex;align-items:center;gap:clamp(28px,13vw,210px);font-size:.9rem}
+.orbita-shortcuts{display:flex;gap:clamp(25px,5vw,80px)}
+.orbita-shortcuts a,.orbita-nav summary{min-height:44px;display:flex;align-items:center;gap:16px}
+.orbita-nav summary{list-style:none;color:var(--orbita-white);text-transform:uppercase;font:400 .72rem var(--orbita-mono);cursor:pointer}
+.orbita-nav summary::-webkit-details-marker{display:none}
+.orbita-nav details{position:relative}
+.orbita-menu-links{position:absolute;right:0;top:100%;width:min(80vw,235px);background:#071721f7;border:1px solid #ffffff47;display:grid;padding:8px 14px}
+.orbita-menu-links a{min-height:44px;display:flex;align-items:center;border-bottom:1px solid #ffffff29;font-size:1rem}
+.orbita :is(.orbita-header,.orbita-opening,.orbita-hero,.orbita-atlas,.orbita-interpretation) :focus-visible{outline-color:#ffc999}
+.orbita-nav[data-home=true] summary span{display:none}
+.orbita-hero,.orbita-opening{position:relative;isolation:isolate;color:var(--orbita-white);background:#071016;overflow:clip}
+.orbita-hero{min-height:var(--hero-height,400px);display:flex;align-items:flex-end;padding:96px var(--orbita-gutter) clamp(36px,5vw,80px)}
+.orbita-hero .orbita-art,.orbita-orbit-art{position:absolute;inset:0;z-index:-2}
+.orbita-art img,.orbita-orbit-art img{object-fit:cover;object-position:center}
+.orbita-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#07172154,transparent 82%),linear-gradient(0deg,#07172135,transparent 65%);pointer-events:none}
+.orbita-hero-content{position:relative;max-width:min(82%,900px)}
+.orbita-hero .orbita-label,.orbita-opening .orbita-label,.orbita-atlas .orbita-label,.orbita-interpretation .orbita-label,.orbita-commitments .orbita-label{color:var(--orbita-gold)}
+.orbita-hero :is(h1,h2){font:300 clamp(3.1rem,5.15vw,5.2rem)/.99 var(--orbita-display);margin-block:clamp(22px,3vw,55px) 20px;letter-spacing:.005em}
+.orbita-hero .orbita-description{font-weight:300;font-size:clamp(1.03rem,1.45vw,1.35rem);line-height:1.25}
+.orbita-note,.orbita-opening-note{position:absolute;left:83%;right:2.3%;bottom:15%;font:300 clamp(.75rem,1vw,1rem)/1.1 var(--orbita-display)}
+.orbita-cross{position:absolute;left:81.4%;top:0;bottom:8%;width:1px;background:#f5f2eb3e;pointer-events:none}
+.orbita-cross img{position:absolute;left:50%;bottom:0;max-width:none;translate:-50% 50%}
+.orbita-mobile-title,.orbita-mobile-copy,.orbita-opening-chapter{display:none}
+.orbita-opening{min-height:min(900px,max(620px,58.333vw))}
+.orbita-orbit-art img{object-position:50% 50%}
+.orbita-opening .orbita-cross{bottom:26%}
+.orbita-opening-copy{position:absolute;left:2.7%;top:56.5%;width:32%;max-width:460px}
+.orbita-opening-copy h1{font:400 clamp(1.45rem,2.16vw,2.22rem)/1.04 var(--orbita-display)}
+.orbita-opening-copy h1>span:first-child{display:inline-block;text-indent:2.4em}
+.orbita-opening-note{bottom:17.5%}
+.orbita-atlas{color:var(--orbita-white);background:var(--orbita-navy);--hero-height:clamp(540px,52.78vw,840px)}
+.orbita-atlas .orbita-hero{padding-bottom:clamp(52px,5.8vw,85px)}
+.orbita-atlas .orbita-hero :is(h1,h2){margin-bottom:clamp(26px,3vw,55px)}
+.orbita-atlas-index{padding-block:36px 32px}
+.orbita-atlas-index>p:first-child{border-top:1px solid #f5f2eb34;padding-block:16px 24px}
+.orbita-atlas-index ol{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,auto);grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(20px,5vw,82px)}
+.orbita-atlas-index li{border-top:1px solid #f5f2eb34}
+.orbita-atlas-index li a{display:grid;grid-template-columns:auto 2rem 1fr;align-items:start;gap:12px;min-height:86px;padding:11px 3px}
+.orbita-atlas-index li a:hover{background:#d5eef312}
+.orbita-atlas-index li img{margin-top:7px}
+.orbita-atlas-index strong{font:400 1.35rem/1.2 var(--orbita-display);text-transform:uppercase}
+.orbita-atlas-index small{display:block;font:400 .63rem/1.5 var(--orbita-mono);color:#a8b9ba;padding-top:2px}
+.orbita-atlas-index .orbita-atlas-caption{color:#a8b9ba;margin-top:16px}
+.orbita-atlas summary{color:var(--orbita-white)}
+.orbita-atlas-index details,.orbita-extra-globe{margin-top:22px;padding-block:12px;border-top:1px solid currentColor}
+.orbita-extra-globe>div{max-width:500px}
+.orbita-desk{--hero-height:350px}
+.orbita-desk .orbita-hero{padding-bottom:62px}
+.orbita-desk .orbita-hero :is(h1,h2){margin-block:16px}
+.orbita-desk .mission-console{border:0;padding-top:32px}
+.orbita-desk .mission-console>.mission-meta,.orbita-desk .mission-finding>.mission-meta{color:var(--orbita-brown)}
+.orbita-desk .mission-console-fields{display:grid;grid-template-columns:.92fr 1.05fr 1.23fr 1.12fr .65fr auto;gap:clamp(10px,1.5vw,24px);border-top:1px solid var(--orbita-line);margin-top:18px;padding-top:23px}
+.orbita-desk .mission-console-fields p:first-of-type,.orbita-desk .mission-console-fields p:nth-of-type(2){display:block}
+.orbita-desk .mission-console-fields label{min-width:0;font:400 .68rem/1.4 var(--orbita-mono);color:#50656b;text-transform:uppercase}
+.orbita-desk .mission-console-fields :is(select,input){font:500 1.22rem/1 var(--orbita-display);color:#132832;background:transparent;border:0;border-bottom:1px solid var(--orbita-line);padding:6px 0;border-radius:0;min-height:42px}
+.orbita-desk .mission-console-fields .mission-action{background:#132832;color:var(--orbita-white);font:500 1.08rem var(--orbita-display);text-transform:uppercase;margin-bottom:4px}
+.orbita-period{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:0}
+.orbita-period legend{font:400 .68rem/1.4 var(--orbita-mono);color:#50656b;text-transform:uppercase}
+.orbita-desk .mission-console-fields input[type=number]{width:100%;min-width:0}
+.orbita-desk .mission-evidence{padding-top:36px}
+.orbita-desk .mission-finding{border-bottom:1px solid var(--orbita-line);padding-bottom:20px;margin-bottom:34px}
+.orbita-desk .mission-finding h2{font:400 clamp(2rem,3.4vw,3.35rem)/1.05 var(--orbita-display);letter-spacing:0;margin:14px 0 5px;max-width:none}
+.orbita-finding-grid{display:grid;grid-template-columns:minmax(0,1.95fr) minmax(260px,1fr);gap:clamp(18px,2vw,28px)}
+.orbita-chart,.orbita-interpretation{padding:clamp(17px,2vw,30px);border-radius:2px}
+.orbita-chart{background:var(--orbita-panel);border:0}
+.orbita .orbita-chart h3{font:400 clamp(1.7rem,2.3vw,2.35rem)/1.05 var(--orbita-display);margin-bottom:6px}
+.orbita-chart .field-plot{margin-top:12px}
+.orbita-finding-grid>.orbita-interpretation:only-child{grid-column:1/-1}
+.orbita-interpretation{background:var(--orbita-navy);color:var(--orbita-white);min-width:0}
+.orbita-interpretation>.orbita-label{padding-bottom:16px;border-bottom:1px solid #c8e0ed37;margin-bottom:14px}
+.orbita-interpretation .mission-finding-stat{display:block;border:0;padding:0;margin:0}
+.orbita-interpretation .mission-finding-stat>div>p{margin-top:12px}
+.orbita-interpretation .mission-slope{font:300 clamp(2.9rem,5vw,4.3rem)/1 var(--orbita-display);letter-spacing:0}
+.orbita-interpretation .mission-slope small{font:400 .82rem var(--orbita-mono)}
+.orbita-interpretation .mission-finding-stat dl{display:block;font-size:1rem}
+.orbita-interpretation dt{font:400 .68rem var(--orbita-mono);color:#c7d6d7;text-transform:uppercase;margin-top:12px}
+.orbita-interpretation a{color:#f2c999}
+.orbita-interpretation [role=status]{padding-block:12px}
+.orbita-evidence-links{display:flex;flex-wrap:wrap;gap:6px 28px;padding-block:20px;font:400 .76rem var(--orbita-mono);text-transform:uppercase}
+.orbita-evidence-links a{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:4px}
+.orbita-desk details:target{outline:2px solid var(--orbita-gold);outline-offset:4px}
+.orbita-native{--hero-height:clamp(475px,41vw,660px)}
+.orbita-native .native-pilot{width:calc(100% - 2 * var(--orbita-gutter));max-width:1550px}
+.orbita-native .native-pilot{padding-top:0}
+.orbita-native .native-pilot h2#native-readings{font:400 .73rem/1.55 var(--orbita-mono);margin:0}
+.orbita-native .native-pilot :is(.orbita-native-summary .orbita-label){color:var(--orbita-brown)}
+.orbita-native .native-pilot .orbita-native-number{color:#132832;margin-block:18px 9px}
+.orbita-native-summary{padding-block:28px 20px}
+.orbita-native-readings,.orbita-native-limits{display:grid;grid-template-columns:1fr 1fr;gap:0 38px;border-top:1px solid var(--orbita-line);margin-top:22px;padding-block:24px}
+.orbita-native-readings>div+div{border-left:1px solid var(--orbita-line);padding-left:38px}
+.orbita-native-number{font:300 clamp(3.25rem,7.75vw,8rem)/1 var(--orbita-display);margin-block:18px 9px}
+.orbita-original{--hero-height:400px}
+.orbita-original-example{display:grid;grid-template-columns:1.4fr 1fr;gap:20px 30px;padding-block:35px 18px}
+.orbita-original-example h2{grid-column:1/-1;padding-bottom:20px;border-bottom:1px solid var(--orbita-line)}
+.orbita-original-example .mission-slope{font-weight:300;letter-spacing:0}
+.orbita-original .field-header h2{font:400 clamp(1.65rem,3vw,2.8rem)/1.05 var(--orbita-display)}
+.orbita-original .field-panel{border-top:1px solid var(--orbita-line)}
+.orbita-methodology{--hero-height:540px}
+.orbita-data-sources{--hero-height:360px}
+.orbita-about{--hero-height:680px;background:var(--orbita-navy);color:var(--orbita-white)}
+.orbita-publication .journal-layout{width:calc(100% - 2 * var(--orbita-gutter));max-width:1550px}
+.orbita-publication .journal-body :is(h2,h3){font-family:var(--orbita-display);letter-spacing:0}
+.orbita-methodology #workflow ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 58px}
+.orbita-methodology #workflow li{min-height:155px}
+.orbita-register,.orbita-commitments{padding-block:35px 28px}
+.orbita-register ol{margin-block:36px}
+.orbita-register li{display:grid;grid-template-columns:6% minmax(0,1fr) 24% 20%;gap:12px;border-top:1px solid var(--orbita-line);min-height:145px;padding-block:15px;align-items:start}
+.orbita-register li>a>strong{font:400 clamp(1.35rem,2.25vw,2rem) var(--orbita-display);text-transform:uppercase}
+.orbita-register li>a>small{color:var(--mission-muted);display:block}
+.orbita-register li>span{font:400 .71rem/1.4 var(--orbita-mono);text-transform:uppercase}
+.orbita-register li>a:hover{text-decoration:underline}
+.orbita-commitments>div{display:grid;grid-template-columns:repeat(3,1fr);gap:6%;padding-block:38px 64px}
+.orbita-commitments section{border-top:1px solid #bccad044;padding-top:16px}
+.orbita-commitments h2{font:400 2rem var(--orbita-display);text-transform:uppercase;margin:10px 0}
+.orbita-commitments section>p:last-child{color:#adbec2}
+.orbita-commitments nav{border-top:1px solid #bccad044}
+.orbita-about .journal-layout{background:var(--orbita-warm);color:#132832;width:100%;padding-inline:var(--orbita-gutter)}
+@media(prefers-reduced-motion:no-preference){
+  .orbita-orbit-art{animation:orbita-arrival 4100ms cubic-bezier(.15,.65,.29,1) both}
+  @keyframes orbita-arrival{from{transform:scale(1.045) translate3d(.4%,-.2%,0)}to{transform:scale(1) translate3d(0,0,0)}}
+  @supports(animation-timeline:view()){
+    .orbita-atlas .orbita-art{animation:orbita-descent linear both;animation-timeline:view();animation-range:entry 0% entry 100%}
+    @keyframes orbita-descent{from{transform:scale(1.07) translateY(1%);opacity:.68}to{transform:scale(1);opacity:1}}
+  }
+}
+@media(max-width:1000px){.orbita-desk .mission-console-fields{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){
+  .orbita-header-inner{min-height:62px}
+  .orbita-wordmark{font-size:24px}
+  .orbita-shortcuts,.orbita-cross,.orbita-note,.orbita-opening-note,.orbita-desktop-intro,.orbita-desktop-title{display:none}
+  .orbita-nav[data-home=true] summary span,.orbita-mobile-copy,.orbita-mobile-title,.orbita-opening-chapter{display:block}
+  .orbita-nav summary img{max-width:20px;height:auto}
+  .orbita-opening{min-height:max(760px,100svh)}
+  .orbita-orbit-art img{object-position:67% top}
+  .orbita-opening::after{content:"";position:absolute;inset:57% 0 0;z-index:-1;background:linear-gradient(#040a0d95,#040a0d 77%)}
+  .orbita-opening-chapter{position:absolute;top:14%;left:20px}
+  .orbita-opening-copy{inset:auto 20px 23px;width:auto}
+  .orbita-opening-copy h1{font-size:clamp(3.4rem,14.9vw,4.6rem);line-height:.95;max-width:7ch;font-weight:300}
+  .orbita-opening-copy h1>span:first-child{text-indent:0}
+  .orbita-opening-copy>p{border-top:1px solid #f5f2eb68;margin-top:15px;padding-top:12px;width:fit-content;font-size:1.3rem;line-height:1.18}
+  .orbita-open-link{margin-top:20px;display:flex;align-items:center;gap:12px;min-height:44px}
+  .orbita-hero{padding:86px 20px 28px;min-height:var(--mobile-hero-height,335px)}
+  .orbita-hero-content{max-width:100%}
+  .orbita-hero :is(h1,h2){font:300 clamp(2.7rem,12vw,4rem)/1 var(--orbita-display);margin-block:20px 12px}
+  .orbita-hero .orbita-description{max-width:34ch}
+  .orbita-atlas{--mobile-hero-height:450px}
+  .orbita-atlas .orbita-hero{padding-bottom:30px}
+  .orbita-atlas .orbita-hero::after{background:linear-gradient(0deg,#071721e0,transparent 95%)}
+  .orbita-atlas-index{padding-top:0}
+  .orbita-atlas-index ol{grid-auto-flow:row;grid-template-rows:none}
+  .orbita-atlas-index li a{grid-template-columns:1fr;min-height:118px;gap:6px;padding:12px 0}
+  .orbita-atlas-index li img{display:none}
+  .orbita-desk{--mobile-hero-height:285px}
+  .orbita-desk .orbita-hero{padding-bottom:24px}
+  .orbita-desk .orbita-hero .orbita-description{margin-top:10px}
+  .orbita-desk .mission-console-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .orbita-desk .mission-console-fields :is(select,input){font-size:1.12rem}
+  .orbita-desk .mission-console-fields .mission-action{grid-column:1/-1;min-height:52px}
+  .orbita-finding-grid,.orbita-original-example{grid-template-columns:minmax(0,1fr)}
+  .orbita-native{--mobile-hero-height:390px}
+  .orbita-native-readings,.orbita-native-limits{gap:16px}
+  .orbita-native-readings>div+div{padding-left:0;border-left:0}
+  .orbita-native-limits{grid-template-columns:1fr;padding:18px;background:var(--orbita-navy);color:var(--orbita-white)}
+  .orbita-native .native-pilot .orbita-native-limits p{color:var(--orbita-white)}
+  .orbita-native .native-pilot .orbita-native-limits .orbita-label{color:var(--orbita-gold)}
+  .orbita-register li{grid-template-columns:1.4rem minmax(0,1fr);min-height:125px}
+  .orbita-register li>span:not(:first-child){grid-column:2}
+  .orbita-commitments>div,.orbita-methodology #workflow ol{grid-template-columns:1fr;gap:14px}
+}
